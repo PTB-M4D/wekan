@@ -4,7 +4,7 @@ LABEL maintainer="Bjoern Ludwig <bjoern.ludwig@ptb.de>"
 # Set the environment variables (defaults where required)
 # DOES NOT WORK: paxctl fix for alpine linux: https://github.com/wekan/wekan/issues/1303
 # ENV BUILD_DEPS="paxctl"
-ENV BUILD_DEPS="apt-utils bsdtar gnupg gosu wget curl bzip2 g++ build-essential git ca-certificates" \
+ENV BUILD_DEPS="apt-utils bsdtar gnupg gosu wget curl bzip2 g++ build-essential git ca-certificates python2.7 python-pip" \
     DEBUG=false \
     NODE_VERSION=v8.16.0 \
     METEOR_RELEASE=1.8.1 \
@@ -258,24 +258,24 @@ RUN \
     #gosu wekan:wekan rm -rf node_modules/bcrypt && \
     #gosu wekan:wekan npm install bcrypt && \
     cd /home/wekan/app_build/bundle/programs/server/ && \
-#    gosu wekan:wekan npm install && \
-#    #gosu wekan:wekan npm install bcrypt && \
-#    mv /home/wekan/app_build/bundle /build && \
-#    \
-#    # Put back the original tar
-#    mv $(which tar)~ $(which tar) && \
-#    \
-#    # Cleanup
-#    apt-get remove --purge -y ${BUILD_DEPS} && \
-#    apt-get autoremove -y && \
-#    npm uninstall -g api2html &&\
-#    rm -R /var/lib/apt/lists/* && \
-#    rm -R /home/wekan/.meteor && \
-#    rm -R /home/wekan/app && \
-#    rm -R /home/wekan/app_build
-#    #cat /home/wekan/python/esprima-python/files.txt | xargs rm -R && \
-#    #rm -R /home/wekan/python
-#    #rm /home/wekan/install_meteor.sh
+    gosu wekan:wekan npm install && \
+    #gosu wekan:wekan npm install bcrypt && \
+    mv /home/wekan/app_build/bundle /build && \
+    \
+    # Put back the original tar
+    mv $(which tar)~ $(which tar) && \
+    \
+    # Cleanup
+    apt-get remove --purge -y ${BUILD_DEPS} && \
+    apt-get autoremove -y && \
+    npm uninstall -g api2html &&\
+    rm -R /var/lib/apt/lists/* && \
+    rm -R /home/wekan/.meteor && \
+    rm -R /home/wekan/app && \
+    rm -R /home/wekan/app_build
+    #cat /home/wekan/python/esprima-python/files.txt | xargs rm -R && \
+    #rm -R /home/wekan/python
+    #rm /home/wekan/install_meteor.sh
 
 ENV PORT=8080
 EXPOSE $PORT
