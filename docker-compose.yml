@@ -122,7 +122,7 @@ services:
     # c) Using specific Meteor 1.6.x version tag:
     # image: quay.io/wekan/wekan:v1.95
     # c) Using Docker Hub automatic builds https://hub.docker.com/r/wekanteam/wekan
-    image: wekanteam/wekan
+    image: bludoc/wekan
     # image: wekanteam/wekan:v2.99
     #-------------------------------------------------------------------------------------
     container_name: wekan-app
@@ -132,9 +132,9 @@ services:
     #-------------------------------------------------------------------------------------
     # ==== BUILD wekan-app DOCKER CONTAINER FROM SOURCE, if you uncomment these ====
     # ==== and use commands: docker-compose up -d --build
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
     #  args:
     #    - NODE_VERSION=${NODE_VERSION}
     #    - METEOR_RELEASE=${METEOR_RELEASE}
@@ -149,7 +149,7 @@ services:
       # For example, if you want to have wekan on port 3001,
       # use 3001:8080 . Do not add any extra address etc here, that way it does not work.
       # remove port mapping if you use nginx reverse proxy, port 8080 is already exposed to wekan-tier network
-      - 80:8080
+      - 8080:8080
     environment:
       - MONGO_URL=mongodb://wekandb:27017/wekan
       #---------------------------------------------------------------
