@@ -40,13 +40,10 @@ jobs:
 
       # Build image.
       - run:
-          name: Pull image
+          name: Build image
+          no_output_timeout: 2h
           command: |
-            docker pull $DOCKER_USER/$IMAGE_NAME:$TAG
-
-#          name: Build image
-#          command: |
-#            docker build -t $DOCKER_USER/$IMAGE_NAME:$TAG .
+            docker build -t $DOCKER_USER/$IMAGE_NAME:$TAG .
 
       # Save the image.
       - run:
@@ -89,4 +86,4 @@ jobs:
             echo $DOCKER_PASS | docker login \
               --username $DOCKER_USER --password-stdin
 
-          #  docker push $DOCKER_USER/$IMAGE_NAME:$TAG
+            docker push $DOCKER_USER/$IMAGE_NAME:$TAG
