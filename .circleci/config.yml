@@ -5,20 +5,36 @@
 # This is mainly taken from
 # https://vsupalov.com/build-docker-image-with-circle-ci-2-push-to-google-container-registry/
 # and adapted to our needs. Thanks for the awesome preparation.
+# The executor bit and triggering the Docker Hub build is taken from
+# https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
 version: 2.1
+
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: wekan
+      TAG: latest
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
 workflows:
-  build_and_push:
+  build_and_deploy:
     jobs:
       - build:
           context: Docker bludoc
+      - test:
+          context: Docker bludoc
+          requires:
+            - build
+      - deploy:
+          context: Docker bludoc
+          requires:
+            - test
 
 jobs:
   build:
-    docker:
-      - image: circleci/node:9
-
+    executor: docker-publisher
     working_directory: ~/repo
-
     steps:
       - checkout
 
@@ -28,24 +44,57 @@ jobs:
 
       # Build image.
       - run:
-          name: Build image
+          name: Pull image
           command: |
-            TAG=latest
-            docker build -t bludoc/wekan:$TAG .
+            docker pull $DOCKER_USER/$IMAGE_NAME:$TAG
+
+#          name: Build image
+#          command: |
+#            docker build -t $DOCKER_USER/$IMAGE_NAME:$TAG .
+
+      # Save the image.
+      - run:
+          name: Save Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+
+      # Permanently store the built image to test and potentially deploy it.
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+
+  test:
+    executor: docker-publisher
+    working_directory: ~/repo
+    steps:
+
+      # Retrieve built and stored image.
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
 
       # Test image.
       - run:
           name: Test images
           command: |
-            TAG=latest
-            docker run -d bludoc/wekan:$TAG
+            docker run -d $DOCKER_USER/$IMAGE_NAME:$TAG
             docker ps | grep $TAG
+
+  deploy:
+    executor: docker-publisher
+    working_directory: ~/repo
+    steps:
+
+      # Retrieve built and stored image.
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
 
       # Push image.
       - run:
           name: Push image
           command: |
-            TAG=latest
             echo $DOCKER_PASS | docker login \
               --username $DOCKER_USER --password-stdin
-            docker push bludoc/wekan:$TAG
+
+          #  docker push $DOCKER_USER/$IMAGE_NAME:$TAG
