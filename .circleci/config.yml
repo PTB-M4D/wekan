@@ -95,6 +95,8 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
 
+      - setup_remote_docker
+
       # Retrieve built and stored image.
       - run:
           name: Load archived Docker image
