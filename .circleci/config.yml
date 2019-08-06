@@ -1,12 +1,12 @@
-# Python CircleCI 2.1 configuration file
+# CircleCI 2.1 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-python/ for more details
+# Check https://circleci.com/docs/2.0 for more details
 #
 # This is mainly taken from
 # https://vsupalov.com/build-docker-image-with-circle-ci-2-push-to-google-container-registry/
-# and adapted to our needs. Thanks for the awesome preparation.
-# The executor bit and triggering the Docker Hub build is taken from
+# and adapted to our needs, especially with enhancements from
 # https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
+# Thanks for the awesome preparation.
 version: 2.1
 
 executors:
