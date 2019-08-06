@@ -22,14 +22,10 @@ workflows:
     jobs:
       - build:
           context: Docker bludoc
-      - test:
+      - test_and_deploy:
           context: Docker bludoc
           requires:
             - build
-      - deploy:
-          context: Docker bludoc
-          requires:
-            - test
 
 jobs:
   build:
@@ -63,7 +59,7 @@ jobs:
           paths:
             - ./image.tar
 
-  test:
+  test_and_deploy:
     executor: docker-publisher
     working_directory: ~/repo
     steps:
@@ -85,26 +81,6 @@ jobs:
           command: |
             docker run -d $DOCKER_USER/$IMAGE_NAME:$TAG
             docker ps | grep $TAG
-
-  deploy:
-    executor: docker-publisher
-    working_directory: ~/repo
-    steps:
-
-      # Attach workflow workspace to retrieve saved image.
-      - attach_workspace:
-          at: /tmp/workspace
-
-      - setup_remote_docker
-
-      # Retrieve built and stored image.
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
-
-      # This builds the image and uploads it to hub.docker.com. Taken from
-      # https://circleci.com/docs/2.0/building-docker-images/#overview
-      - setup_remote_docker
 
       # Push image.
       - run:
