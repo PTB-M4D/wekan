@@ -41,7 +41,7 @@ jobs:
       # Build image.
       - run:
           name: Build image
-          no_output_timeout: 2h
+          no_output_timeout: 50m
           command: |
             docker build -t $DOCKER_USER/$IMAGE_NAME:$TAG .
 
