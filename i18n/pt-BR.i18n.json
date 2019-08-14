@@ -512,6 +512,10 @@
   "new-outgoing-webhook": "Novo Webhook de saída",
   "no-name": "(Desconhecido)",
   "Node_version": "Versão do Node",
+  "Meteor_version": "Meteor version",
+  "MongoDB_version": "MongoDB version",
+  "MongoDB_storage_engine": "MongoDB storage engine",
+  "MongoDB_Oplog_enabled": "MongoDB Oplog enabled",
   "OS_Arch": "Arquitetura do SO",
   "OS_Cpus": "Quantidade de CPUS do SO",
   "OS_Freemem": "Memória Disponível do SO",
@@ -721,5 +725,6 @@
   "act-duenow": "está lembrando que o prazo final (__timeValue__) do __card__ é agora",
   "act-atUserComment": "Você foi mencionado no [__board__] __card__",
   "delete-user-confirm-popup": "Você realmente quer apagar esta conta? Não há como desfazer.",
-  "accounts-allowUserDelete": "Permitir que usuários apaguem a própria conta"
+  "accounts-allowUserDelete": "Permitir que usuários apaguem a própria conta",
+  "hide-minicard-label-text": "Esconder rótulo da etiqueta do mini cartão"
 }
