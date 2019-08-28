@@ -40,6 +40,9 @@
         # https://github.com/wekan/wekan/pull/2560
         export RICHER_CARD_COMMENT_EDITOR=true
         #---------------------------------------------------------------
+        # ==== CARD OPENED, SEND WEBHOOK MESSAGE ====
+        export CARD_OPENED_WEBHOOK_ENABLED=false
+        #---------------------------------------------------------------
         # ==== Allow to shrink attached/pasted image ====
         # https://github.com/wekan/wekan/pull/2544
         #export MAX_IMAGE_PIXEL=1024
@@ -47,19 +50,19 @@
         #---------------------------------------------------------------
         # ==== BIGEVENTS DUE ETC NOTIFICATIONS =====
         # https://github.com/wekan/wekan/pull/2541
-        # Introduced a system env var BIGEVENTS_PATTERN default as "due",
+        # Introduced a system env var BIGEVENTS_PATTERN default as "NONE",
         # so any activityType matches the pattern, system will send out
         # notifications to all board members no matter they are watching
         # or tracking the board or not. Owner of the wekan server can
         # disable the feature by setting this variable to "NONE" or
         # change the pattern to any valid regex. i.e. '|' delimited
         # activityType names.
-        # a) Default
+        # a) Example
         #export BIGEVENTS_PATTERN=due
         # b) All
         #export BIGEVENTS_PATTERN=received|start|due|end
         # c) Disabled
-        #export BIGEVENTS_PATTERN=NONE
+        export BIGEVENTS_PATTERN=NONE
         #---------------------------------------------------------------
         # ==== EMAIL DUE DATE NOTIFICATION =====
         # https://github.com/wekan/wekan/pull/2536
