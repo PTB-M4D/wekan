@@ -1,3 +1,34 @@
+# v3.41 2019-09-13 Wekan release
+
+This release adds the following new features:
+
+- [More Mobile and Desktop drag handles for Swimlanes/Lists/Cards. Part 1](https://github.com/wekan/wekan/commit/ff550e91103115e7b731dd80c4588b93b2d4c64f).
+  Thanks to xet7.
+    
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v3.40 2019-09-11 Wekan release
+
+This release fixes the following bugs:
+
+- [Fix subcard selector](https://github.com/wekan/wekan/pull/2697).
+  Thanks to justinr1234.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v3.39 2019-09-11 Wekan release
+
+This release fixes the following bugs:
+
+- [To load all boards, revert Wekan v3.37 Fix Linked cards make load all cards of database](https://github.com/wekan/wekan/commit/6ce8eeee6c477cd39b684c47bf122b5872818ada).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v3.38 2019-09-11 Wekan release
+
+- Update translations. Thanks to translators.
+
 # v3.37 2019-09-07 Wekan release
 
 This release fixes the following bugs:
