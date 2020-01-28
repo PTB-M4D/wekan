@@ -1,4 +1,40 @@
+import { Cookies } from 'meteor/ostrio:cookies';
+const cookies = new Cookies();
+
 Utils = {
+  setBoardView(view) {
+    currentUser = Meteor.user();
+    if (currentUser) {
+      Meteor.user().setBoardView(view);
+    } else if (view === 'board-view-lists') {
+      cookies.set('boardView', 'board-view-lists'); //true
+    } else if (view === 'board-view-swimlanes') {
+      cookies.set('boardView', 'board-view-swimlanes'); //true
+    } else if (view === 'board-view-cal') {
+      cookies.set('boardView', 'board-view-cal'); //true
+    }
+  },
+
+  unsetBoardView() {
+    cookies.remove('boardView');
+    cookies.remove('collapseSwimlane');
+  },
+
+  boardView() {
+    currentUser = Meteor.user();
+    if (currentUser) {
+      return (currentUser.profile || {}).boardView;
+    } else if (cookies.get('boardView') === 'board-view-lists') {
+      return 'board-view-lists';
+    } else if (cookies.get('boardView') === 'board-view-swimlanes') {
+      return 'board-view-swimlanes';
+    } else if (cookies.get('boardView') === 'board-view-cal') {
+      return 'board-view-cal';
+    } else {
+      return false;
+    }
+  },
+
   // XXX We should remove these two methods
   goBoardId(_id) {
     const board = Boards.findOne(_id);

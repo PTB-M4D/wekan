@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Wekan REST API
-  version: v3.49
+  version: v3.71
   description: |
     The REST API allows you to control and extend Wekan with ease.
 
@@ -209,6 +209,12 @@ paths:
           in: formData
           description: |
             only enable comments (default false)
+          type: boolean
+          required: false
+        - name: isWorker
+          in: formData
+          description: |
+            only move cards, assign himself to card and comment (default false)
           type: boolean
           required: false
         - name: permission
@@ -1273,6 +1279,12 @@ paths:
             the member IDs list of the new card
           type: string
           required: false
+        - name: assignees
+          in: formData
+          description: |
+            the array of maximum one ID of assignee of the new card
+          type: string
+          required: false
         - name: title
           in: formData
           description: |
@@ -1438,6 +1450,11 @@ paths:
           description: the members value
           type: string
           required: true
+        - name: assignees
+          in: formData
+          description: the assignees value
+          type: string
+          required: true
         - name: swimlaneId
           in: formData
           description: the swimlaneId value
@@ -1521,6 +1538,12 @@ paths:
           in: formData
           description: |
             CommentsOnly capability
+          type: boolean
+          required: true
+        - name: isWorker
+          in: formData
+          description: |
+            Worker capability
           type: boolean
           required: true
         - name: board
@@ -2204,6 +2227,10 @@ definitions:
         description: |
            Is the member only allowed to comment on the board
         type: boolean
+      isWorker:
+        description: |
+           Is the member only allowed to move card, assign himself to card and comment
+        type: boolean
     required:
       - userId
       - isAdmin
@@ -2349,6 +2376,15 @@ definitions:
       members:
         description: |
            list of members (user IDs)
+        type: array
+        items:
+          type: string
+          x-nullable: true
+        x-nullable: true
+      assignees:
+        description: |
+           who is assignee of the card (user ID),
+           maximum one ID of assignee in array.
         type: array
         items:
           type: string
@@ -2611,6 +2647,12 @@ definitions:
         description: |
            the title of the list
         type: string
+      starred:
+        description: |
+           if a list is stared
+           then we put it on the top
+        type: boolean
+        x-nullable: true
       archived:
         description: |
            is the list archived
@@ -2870,6 +2912,10 @@ definitions:
         description: |
            full name of the user
         type: string
+      showDesktopDragHandles:
+        description: |
+           does the user want to hide system messages?
+        type: boolean
       hiddenSystemMessages:
         description: |
            does the user want to hide system messages?
@@ -2923,6 +2969,17 @@ definitions:
           - board-view-lists
           - board-view-swimlanes
           - board-view-cal
+      listSortBy:
+        description: |
+           default sort list for user
+        type: string
+        enum:
+          - -modifiedat
+          - modifiedat
+          - -title
+          - title
+          - -sort
+          - sort
       templatesBoardId:
         description: |
            Reference to the templates board

@@ -1,3 +1,5 @@
+import { Cookies } from 'meteor/ostrio:cookies';
+const cookies = new Cookies();
 Sidebar = null;
 
 const defaultView = 'home';
@@ -107,7 +109,14 @@ BlazeComponent.extendComponent({
         'click .js-toggle-sidebar': this.toggle,
         'click .js-back-home': this.setView,
         'click .js-toggle-minicard-label-text'() {
-          Meteor.call('toggleMinicardLabelText');
+          currentUser = Meteor.user();
+          if (currentUser) {
+            Meteor.call('toggleMinicardLabelText');
+          } else if (cookies.has('hiddenMinicardLabelText')) {
+            cookies.remove('hiddenMinicardLabelText');
+          } else {
+            cookies.set('hiddenMinicardLabelText', 'true');
+          }
         },
         'click .js-shortcuts'() {
           FlowRouter.go('shortcuts');
@@ -121,7 +130,14 @@ Blaze.registerHelper('Sidebar', () => Sidebar);
 
 Template.homeSidebar.helpers({
   hiddenMinicardLabelText() {
-    return Meteor.user().hasHiddenMinicardLabelText();
+    currentUser = Meteor.user();
+    if (currentUser) {
+      return (currentUser.profile || {}).hiddenMinicardLabelText;
+    } else if (cookies.has('hiddenMinicardLabelText')) {
+      return true;
+    } else {
+      return false;
+    }
   },
 });
 
@@ -145,10 +161,13 @@ Template.memberPopup.helpers({
       const currentBoard = Boards.findOne(Session.get('currentBoard'));
       const commentOnly = currentBoard.hasCommentOnly(this.userId);
       const noComments = currentBoard.hasNoComments(this.userId);
+      const worker = currentBoard.hasWorker(this.userId);
       if (commentOnly) {
         return TAPi18n.__('comment-only').toLowerCase();
       } else if (noComments) {
         return TAPi18n.__('no-comments').toLowerCase();
+      } else if (worker) {
+        return TAPi18n.__('worker').toLowerCase();
       } else {
         return TAPi18n.__(type).toLowerCase();
       }
@@ -250,6 +269,14 @@ Template.membersWidget.helpers({
   isInvited() {
     const user = Meteor.user();
     return user && user.isInvitedTo(Session.get('currentBoard'));
+  },
+  isWorker() {
+    const user = Meteor.user();
+    if (user) {
+      return Meteor.call(Boards.hasWorker(user.memberId));
+    } else {
+      return false;
+    }
   },
 });
 
@@ -628,7 +655,7 @@ BlazeComponent.extendComponent({
 }).register('addMemberPopup');
 
 Template.changePermissionsPopup.events({
-  'click .js-set-admin, click .js-set-normal, click .js-set-no-comments, click .js-set-comment-only'(
+  'click .js-set-admin, click .js-set-normal, click .js-set-no-comments, click .js-set-comment-only, click .js-set-worker'(
     event,
   ) {
     const currentBoard = Boards.findOne(Session.get('currentBoard'));
@@ -638,11 +665,13 @@ Template.changePermissionsPopup.events({
       'js-set-comment-only',
     );
     const isNoComments = $(event.currentTarget).hasClass('js-set-no-comments');
+    const isWorker = $(event.currentTarget).hasClass('js-set-worker');
     currentBoard.setMemberPermission(
       memberId,
       isAdmin,
       isNoComments,
       isCommentOnly,
+      isWorker,
     );
     Popup.back(1);
   },
@@ -659,7 +688,8 @@ Template.changePermissionsPopup.helpers({
     return (
       !currentBoard.hasAdmin(this.userId) &&
       !currentBoard.hasNoComments(this.userId) &&
-      !currentBoard.hasCommentOnly(this.userId)
+      !currentBoard.hasCommentOnly(this.userId) &&
+      !currentBoard.hasWorker(this.userId)
     );
   },
 
@@ -676,6 +706,13 @@ Template.changePermissionsPopup.helpers({
     return (
       !currentBoard.hasAdmin(this.userId) &&
       currentBoard.hasCommentOnly(this.userId)
+    );
+  },
+
+  isWorker() {
+    const currentBoard = Boards.findOne(Session.get('currentBoard'));
+    return (
+      !currentBoard.hasAdmin(this.userId) && currentBoard.hasWorker(this.userId)
     );
   },
 
