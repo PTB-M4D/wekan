@@ -60,6 +60,9 @@ BlazeComponent.extendComponent({
       if ($itemsDom.data('sortable')) {
         $(self.itemsDom).sortable('option', 'disabled', !userIsMember());
       }
+      if ($itemsDom.data('sortable')) {
+        $(self.itemsDom).sortable('option', 'disabled', Utils.isMiniScreen());
+      }
     });
   },
 
@@ -247,7 +250,7 @@ BlazeComponent.extendComponent({
   events() {
     return [
       {
-        'click .js-checklist-item .check-box': this.toggleItem,
+        'click .js-checklist-item .check-box-container': this.toggleItem,
       },
     ];
   },
