@@ -1,5 +1,5 @@
 const subManager = new SubsManager();
-const { calculateIndexData, enableClickOnTouch } = Utils;
+const { calculateIndexData } = Utils;
 
 let cardColors;
 Meteor.startup(() => {
@@ -52,22 +52,6 @@ BlazeComponent.extendComponent({
         if (state === true) return false;
       }
     }
-    return null;
-  },
-  votePublic() {
-    const card = this.currentData();
-    if (card.vote)
-      return card.vote.public
-    return null
-  },
-  voteCountPositive() {
-    const card = this.currentData();
-    if (card.vote && card.vote.positive) return card.vote.positive.length;
-    return null;
-  },
-  voteCountNegative() {
-    const card = this.currentData();
-    if (card.vote && card.vote.negative) return card.vote.negative.length;
     return null;
   },
   isWatching() {
@@ -147,6 +131,15 @@ BlazeComponent.extendComponent({
       }
     }
     return result;
+  },
+
+  showVotingButtons() {
+    const card = this.currentData();
+    return (
+      (currentUser.isBoardMember() ||
+        (currentUser && card.voteAllowNonBoardMembers())) &&
+      !card.expiredVote()
+    );
   },
 
   onRendered() {
@@ -232,9 +225,6 @@ BlazeComponent.extendComponent({
       },
     });
 
-    // ugly touch event hotfix
-    enableClickOnTouch('.card-checklist-items .js-checklist');
-
     const $subtasksDom = this.$('.card-subtasks-items');
 
     $subtasksDom.sortable({
@@ -270,26 +260,21 @@ BlazeComponent.extendComponent({
       },
     });
 
-    // ugly touch event hotfix
-    enableClickOnTouch('.card-subtasks-items .js-subtasks');
-
     function userIsMember() {
       return Meteor.user() && Meteor.user().isBoardMember();
     }
 
     // Disable sorting if the current user is not a board member
     this.autorun(() => {
-      if ($checklistsDom.data('sortable')) {
-        $checklistsDom.sortable('option', 'disabled', !userIsMember());
+      const disabled = !userIsMember() || Utils.isMiniScreen();
+      if (
+        $checklistsDom.data('uiSortable') ||
+        $checklistsDom.data('sortable')
+      ) {
+        $checklistsDom.sortable('option', 'disabled', disabled);
       }
-      if ($subtasksDom.data('sortable')) {
-        $subtasksDom.sortable('option', 'disabled', !userIsMember());
-      }
-      if ($checklistsDom.data('sortable')) {
-        $checklistsDom.sortable('option', 'disabled', Utils.isMiniScreen());
-      }
-      if ($subtasksDom.data('sortable')) {
-        $subtasksDom.sortable('option', 'disabled', Utils.isMiniScreen());
+      if ($subtasksDom.data('uiSortable') || $subtasksDom.data('sortable')) {
+        $subtasksDom.sortable('option', 'disabled', disabled);
       }
     });
   },
@@ -380,7 +365,7 @@ BlazeComponent.extendComponent({
           }
         },
         'click .js-go-to-linked-card'() {
-           Utils.goCardId(this.data().linkedId)
+          Utils.goCardId(this.data().linkedId);
         },
         'click .js-member': Popup.open('cardMember'),
         'click .js-add-members': Popup.open('cardMembers'),
@@ -391,7 +376,7 @@ BlazeComponent.extendComponent({
         'click .js-start-date': Popup.open('editCardStartDate'),
         'click .js-due-date': Popup.open('editCardDueDate'),
         'click .js-end-date': Popup.open('editCardEndDate'),
-        'click .js-show-positive-votes':Popup.open('positiveVoteMembers'),
+        'click .js-show-positive-votes': Popup.open('positiveVoteMembers'),
         'click .js-show-negative-votes': Popup.open('negativeVoteMembers'),
         'mouseenter .js-card-details'() {
           const parentComponent = this.parentComponent().parentComponent();
@@ -420,9 +405,9 @@ BlazeComponent.extendComponent({
           const forIt = $(e.target).hasClass('js-vote-positive');
           let newState = null;
           if (
-            this.voteState() == null ||
-            (this.voteState() == false && forIt) ||
-            (this.voteState() == true && !forIt)
+            this.voteState() === null ||
+            (this.voteState() === false && forIt) ||
+            (this.voteState() === true && !forIt)
           ) {
             newState = forIt;
           }
@@ -620,11 +605,6 @@ Template.cardDetailsActionsPopup.events({
   'click .js-copy-card': Popup.open('copyCard'),
   'click .js-copy-checklist-cards': Popup.open('copyChecklistToManyCards'),
   'click .js-set-card-color': Popup.open('setCardColor'),
-  'click .js-cancel-voting'(event) {
-    event.preventDefault();
-    this.unsetVote();
-    Popup.close();
-  },
   'click .js-move-card-to-top'(event) {
     event.preventDefault();
     const minOrder = _.min(
@@ -658,7 +638,7 @@ Template.cardDetailsActionsPopup.events({
   },
 });
 
-Template.editCardTitleForm.onRendered(function () {
+Template.editCardTitleForm.onRendered(function() {
   autosize(this.$('.js-edit-card-title'));
 });
 
@@ -672,7 +652,7 @@ Template.editCardTitleForm.events({
   },
 });
 
-Template.editCardRequesterForm.onRendered(function () {
+Template.editCardRequesterForm.onRendered(function() {
   autosize(this.$('.js-edit-card-requester'));
 });
 
@@ -685,7 +665,7 @@ Template.editCardRequesterForm.events({
   },
 });
 
-Template.editCardAssignerForm.onRendered(function () {
+Template.editCardAssignerForm.onRendered(function() {
   autosize(this.$('.js-edit-card-assigner'));
 });
 
@@ -825,7 +805,7 @@ Template.copyChecklistToManyCardsPopup.events({
 
         // copy subtasks
         cursor = Cards.find({ parentId: oldId });
-        cursor.forEach(function () {
+        cursor.forEach(function() {
           'use strict';
           const subtask = arguments[0];
           subtask.parentId = _id;
@@ -976,7 +956,23 @@ BlazeComponent.extendComponent({
         },
         'click .js-delete': Popup.afterConfirm('cardDelete', function() {
           Popup.close();
-          Cards.remove(this._id);
+          // verify that there are no linked cards
+          if (Cards.find({ linkedId: this._id }).count() === 0) {
+            Cards.remove(this._id);
+          } else {
+            // TODO: Maybe later we can list where the linked cards are.
+            // Now here is popup with a hint that the card cannot be deleted
+            // as there are linked cards.
+            // Related:
+            //   client/components/lists/listHeader.js about line 248
+            //   https://github.com/wekan/wekan/issues/2785
+            const message = `${TAPi18n.__(
+              'delete-linked-card-before-this-card',
+            )} linkedId: ${
+              this._id
+            } at client/components/cards/cardDetails.js and https://github.com/wekan/wekan/issues/2785`;
+            alert(message);
+          }
           Utils.goBoardId(this.boardId);
         }),
         'change .js-field-parent-board'(event) {
@@ -1009,21 +1005,92 @@ BlazeComponent.extendComponent({
   events() {
     return [
       {
+        'click .js-end-date': Popup.open('editVoteEndDate'),
         'submit .edit-vote-question'(evt) {
           evt.preventDefault();
           const voteQuestion = evt.target.vote.value;
           const publicVote = $('#vote-public').hasClass('is-checked');
-          this.currentCard.setVoteQuestion(voteQuestion, publicVote);
+          const allowNonBoardMembers = $('#vote-allow-non-members').hasClass(
+            'is-checked',
+          );
+          const endString = this.currentCard.getVoteEnd();
+
+          this.currentCard.setVoteQuestion(
+            voteQuestion,
+            publicVote,
+            allowNonBoardMembers,
+          );
+          if (endString) {
+            this.currentCard.setVoteEnd(endString);
+          }
           Popup.close();
         },
+        'click .js-remove-vote': Popup.afterConfirm('deleteVote', () => {
+          event.preventDefault();
+          this.currentCard.unsetVote();
+          Popup.close();
+        }),
         'click a.js-toggle-vote-public'(event) {
           event.preventDefault();
           $('#vote-public').toggleClass('is-checked');
+        },
+        'click a.js-toggle-vote-allow-non-members'(event) {
+          event.preventDefault();
+          $('#vote-allow-non-members').toggleClass('is-checked');
         },
       },
     ];
   },
 }).register('cardStartVotingPopup');
+
+// editVoteEndDatePopup
+(class extends DatePicker {
+  onCreated() {
+    super.onCreated(moment().format('YYYY-MM-DD HH:mm'));
+    this.data().getVoteEnd() && this.date.set(moment(this.data().getVoteEnd()));
+  }
+  events() {
+    return [
+      {
+        'submit .edit-date'(evt) {
+          evt.preventDefault();
+
+          // if no time was given, init with 12:00
+          const time =
+            evt.target.time.value ||
+            moment(new Date().setHours(12, 0, 0)).format('LT');
+
+          const dateString = `${evt.target.date.value} ${time}`;
+          const newDate = moment(dateString, 'L LT', true);
+          if (newDate.isValid()) {
+            // if active vote -  store it
+            if (this.currentData().getVoteQuestion()) {
+              this._storeDate(newDate.toDate());
+              Popup.close();
+            } else {
+              this.currentData().vote = { end: newDate.toDate() }; // set vote end temp
+              Popup.back();
+            }
+          } else {
+            this.error.set('invalid-date');
+            evt.target.date.focus();
+          }
+        },
+        'click .js-delete-date'(evt) {
+          evt.preventDefault();
+          this._deleteDate();
+          Popup.close();
+        },
+      },
+    ];
+  }
+  _storeDate(newDate) {
+    this.card.setVoteEnd(newDate);
+  }
+  _deleteDate() {
+    this.card.unsetVoteEnd();
+  }
+}.register('editVoteEndDatePopup'));
 
 // Close the card details pane by pressing escape
 EscapeActions.register(

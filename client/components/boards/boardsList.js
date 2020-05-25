@@ -9,7 +9,7 @@ Template.boardListHeaderBar.events({
 
 Template.boardListHeaderBar.helpers({
   title() {
-    return FlowRouter.getRouteName() == 'home' ? 'my-boards' : 'public';
+    return FlowRouter.getRouteName() === 'home' ? 'my-boards' : 'public';
   },
   templatesBoardId() {
     return Meteor.user() && Meteor.user().getTemplatesBoardId();
@@ -25,7 +25,6 @@ BlazeComponent.extendComponent({
   },
 
   onRendered() {
-    const self = this;
     function userIsAllowedToMove() {
       return Meteor.user();
     }
@@ -73,20 +72,28 @@ BlazeComponent.extendComponent({
 
     // Disable drag-dropping if the current user is not a board member or is comment only
     this.autorun(() => {
+      if (Utils.isMiniScreen()) {
+        $boards.sortable({
+          handle: '.board-handle',
+        });
+      }
+
       $boards.sortable('option', 'disabled', !userIsAllowedToMove());
     });
   },
 
   boards() {
-    let query = {
+    const query = {
       archived: false,
       type: 'board',
     };
-    if (FlowRouter.getRouteName() == 'home')
+    if (FlowRouter.getRouteName() === 'home')
       query['members.userId'] = Meteor.userId();
     else query.permission = 'public';
 
-    return Boards.find(query, { sort: { sort: 1 /* boards default sorting */ } });
+    return Boards.find(query, {
+      sort: { sort: 1 /* boards default sorting */ },
+    });
   },
   isStarred() {
     const user = Meteor.user();

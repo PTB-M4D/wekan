@@ -255,6 +255,7 @@ Boards.attachSchema(
         'dark',
         'relax',
         'corteza',
+        'clearblue'
       ],
       // eslint-disable-next-line consistent-return
       autoValue() {
@@ -1297,7 +1298,10 @@ if (Meteor.isServer) {
 
 // Insert new board at last position in sort order.
 Boards.before.insert((userId, doc) => {
-  const lastBoard = Boards.findOne({ sort: { $exists: true } }, { sort: { sort: -1 } });
+  const lastBoard = Boards.findOne(
+    { sort: { $exists: true } },
+    { sort: { sort: -1 } },
+  );
   if (lastBoard && typeof lastBoard.sort !== 'undefined') {
     doc.sort = lastBoard.sort + 1;
   }

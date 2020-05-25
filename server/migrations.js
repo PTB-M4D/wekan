@@ -119,6 +119,7 @@ Migrations.add('use-css-class-for-boards-colors', () => {
     '#2C3E51': 'dark',
     '#27AE61': 'relax',
     '#568BA2': 'corteza',
+    '#499BEA': 'clearblue'
   };
   Boards.find().forEach(board => {
     const oldBoardColor = board.background.color;
@@ -1036,12 +1037,8 @@ Migrations.add('add-description-text-allowed', () => {
 
 Migrations.add('add-sort-field-to-boards', () => {
   Boards.find().forEach((board, index) => {
-  if (!board.hasOwnProperty('sort')) {
-      Boards.direct.update(
-        board._id,
-        { $set: { sort: index } },
-        noValidate
-      );
+    if (!board.hasOwnProperty('sort')) {
+      Boards.direct.update(board._id, { $set: { sort: index } }, noValidate);
     }
   });
 });
