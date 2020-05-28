@@ -115,7 +115,7 @@ services:
     # NOTE: Quay is currently not updated, use Docker Hub image below c)
     # a) For Wekan Meteor 1.8.x version at master branch,
     #    using https://quay.io/wekan/wekan automatic builds
-    image: quay.io/wekan/wekan
+    #image: quay.io/wekan/wekan
     # b) Using specific Meteor 1.6.x version tag:
     # image: quay.io/wekan/wekan:v1.95
     # c) Using Docker Hub automatic builds https://hub.docker.com/r/wekanteam/wekan
@@ -598,7 +598,7 @@ services:
       # example : LOGOUT_ON_MINUTES=55
       #- LOGOUT_ON_MINUTES=
       #-------------------------------------------------------------------
-      # Hide password login form 
+      # Hide password login form
       # - PASSWORD_LOGIN_ENABLED=true
       #-------------------------------------------------------------------
     depends_on:
