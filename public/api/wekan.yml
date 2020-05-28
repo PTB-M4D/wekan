@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Wekan REST API
-  version: v4.03
+  version: v4.09
   description: |
     The REST API allows you to control and extend Wekan with ease.
 
@@ -2079,6 +2079,8 @@ definitions:
           - relax
           - corteza
           - clearblue
+          - natural
+          - modern
       description:
         description: |
            The description of the board
@@ -2666,6 +2668,7 @@ definitions:
           - number
           - date
           - dropdown
+          - currency
       settings:
         description: |
            settings of the custom field
@@ -2699,6 +2702,8 @@ definitions:
   CustomFieldsSettings:
     type: object
     properties:
+      currencyCode:
+        type: string
       dropdownItems:
         description: |
            list of drop down items objects
