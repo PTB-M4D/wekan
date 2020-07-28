@@ -128,6 +128,13 @@ Users.attachSchema(
       type: Boolean,
       optional: true,
     },
+    'profile.hideCheckedItems': {
+      /**
+       * does the user want to hide checked checklist items?
+       */
+      type: Boolean,
+      optional: true,
+    },
     'profile.hiddenSystemMessages': {
       /**
        * does the user want to hide system messages?
@@ -483,6 +490,11 @@ Users.helpers({
     return profile.showDesktopDragHandles || false;
   },
 
+  hasHideCheckedItems() {
+    const profile = this.profile || {};
+    return profile.hideCheckedItems || false;
+  },
+
   hasHiddenSystemMessages() {
     const profile = this.profile || {};
     return profile.hiddenSystemMessages || false;
@@ -612,6 +624,15 @@ Users.mutations({
     };
   },
 
+  toggleHideCheckedItems() {
+    const value = this.hasHideCheckedItems();
+    return {
+      $set: {
+        'profile.hideCheckedItems': !value,
+      },
+    };
+  },
+
   toggleSystem(value = false) {
     return {
       $set: {
@@ -689,6 +710,10 @@ Meteor.methods({
   toggleDesktopDragHandles() {
     const user = Meteor.user();
     user.toggleDesktopHandles(user.hasShowDesktopDragHandles());
+  },
+  toggleHideCheckedItems() {
+    const user = Meteor.user();
+    user.toggleHideCheckedItems();
   },
   toggleSystemMessages() {
     const user = Meteor.user();
@@ -921,7 +946,8 @@ if (Meteor.isServer) {
       existingUser.profile = user.profile;
       existingUser.authenticationMethod = user.authenticationMethod;
 
-      Meteor.users.remove({ _id: existingUser._id }); // remove existing record
+      Meteor.users.remove({ _id: user._id });
+      Meteor.users.remove({ _id: existingUser._id }); // is going to be created again
       return existingUser;
     }
 
@@ -1110,9 +1136,9 @@ if (Meteor.isServer) {
         */
 
         const Future = require('fibers/future');
-        let future1 = new Future();
-        let future2 = new Future();
-        let future3 = new Future();
+        const future1 = new Future();
+        const future2 = new Future();
+        const future3 = new Future();
         Boards.insert(
           {
             title: TAPi18n.__('templates'),
