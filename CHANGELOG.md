@@ -1,3 +1,80 @@
+# v4.26 2020-09-05 Wekan release
+
+This release adds the following quality checks:
+
+- [Added GitHub automatic code quality analysis](https://github.com/wekan/wekan/commit/df35683043603f6ecb9bd4f2a4b357e374397ad1).
+  Thanks to xet7.
+
+and updates the following dependencies:
+
+- [bl](https://github.com/wekan/wekan/commit/7ec671bb9f8a33c5eb28c26b98143f9b4cd9b958).
+  Thanks to developers of dependencies.
+- [Delete markdown demo that is not in use](https://github.com/wekan/wekan/commit/d344c39d497cc291ee7927fdda900dc8bac22bc2).
+  Thanks to xet7.
+- [Update markdown and xss](https://github.com/wekan/wekan/commit/cfcbf640d64bdfc4f3a482c32e35f396e1a22191)
+  Thanks to developers of dependencies.
+
+and fixes the following bugs:
+
+- [Disable list formatting and converting to HTML. This fixes markdown numbering and viewing bugs](https://github.com/wekan/wekan/commit/41b1c55988a9a65005ac0b9e1ddcc0596c047a49).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v4.25 2020-08-31 Wekan release
+
+This release adds the following docker-compose.yml changes:
+
+- [Mongo 4.4 does not work. Mongo 4.2 and 3.x works](https://github.com/wekan/wekan/commit/5d2daa4a80c819f0610ff2f17589de1e1085836c).
+  Thanks to GuidoDr for info. Related https://github.com/wekan/wekan/issues/3247
+
+and adds the following Nextcloud documentation:
+
+- [Improving documentation for Nextcloud integration](https://github.com/wekan/wekan/pull/3248).
+  Thanks to relikd.
+
+and removes the following code and allows double quotes in code:
+
+- Removed custom scrollbar [1](https://github.com/wekan/wekan/pull/3246) and [2](https://github.com/wekan/wekan/commit/5870d38e8e63159ede8c18d1766a4f9f6ba8987c).
+  Also in eslint settings allowed double quotes in code. Thanks to tborychowski and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v4.24 2020-08-27 Wekan release
+
+This release adds the following updates:
+
+- [Upgrade to Meteor 1.11](https://github.com/wekan/wekan/commit/4d49265b25595444553e1c2d6e48c7a699949654).
+  Thanks to Meteor developers.
+- [Update bcrypt](https://github.com/wekan/wekan/commit/dee7020a5aaa90c8580ef42fa73aff0ca4ae3e12).
+  Thanks to bcrypt developers.
+- [Update dependencies](https://github.com/wekan/wekan/commit/60b2787c559b9966d6040a622c5b971fa95241c3).
+  Thanks to developers of dependencies.
+
+and adds the following translations:
+
+- [Add Trigger and Action header words to Rule Details](https://github.com/wekan/wekan/pull/3244).
+  Thanks to helioguardabaxo.
+- [Add Spanish (Peru) (es_PE)](https://github.com/wekan/wekan/commit/b9f87bf310b4f071c8219bb7511b15a7fa27340d).
+  Thanks to translators.
+
+and adds the following mouse scroll settings:
+
+- [Add setting for mouse scroll deltafactor. Fix snap setting for mouse scroll amount](https://github.com/wekan/wekan/commit/7e4b791c2964f4b130abbaee62ffdff1536450c4).
+  Thanks to danger89 and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v4.23 2020-08-13 Wekan release
+
+This release fixes following CRITICAL VULNERABILITIES:
+
+- [Update vulnerable dependency elliptic that is dependency of meteor-node-stubs that is dependency of
+  Wekan](https://github.com/wekan/wekan/commit/910f0cecbe7a4b3fdff603e5e74c2cb1c40b660b).
+  Thanks to filipenevola, neeldug, L25inux and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
 # v4.22 2020-07-23 Wekan release
 
 This release adds back these features:

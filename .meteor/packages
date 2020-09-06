@@ -70,20 +70,18 @@ rajit:bootstrap3-datepicker
 shell-server@0.5.0
 simple:rest-accounts-password
 useraccounts:core
-email@1.2.3
+email@2.0.0
 horka:swipebox
 dynamic-import@0.5.2
 staringatlights:fast-render
 
-accounts-password@1.6.0
+accounts-password@1.6.2
 cfs:gridfs
 rzymek:fullcalendar
 momentjs:moment@2.22.2
 browser-policy-framing@1.1.0
 mquandalle:moment
 msavin:usercache
-wekan-scrollbar
-mquandalle:perfect-scrollbar
 mdg:meteor-apm-agent@3.2.0-rc.0!
 # Keep stylus in 1.1.0, because building v2 takes extra 52 minutes.
 coagmano:stylus@1.1.0!

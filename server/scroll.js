@@ -12,4 +12,11 @@ Meteor.startup(() => {
   } else {
     Meteor.settings.public.SCROLLAMOUNT = 'auto';
   }
+
+  // Mouse Scroll DeltaFactor, issue #2949. "auto" or Integer.
+  if (process.env.SCROLLDELTAFACTOR !== 'auto') {
+    Meteor.settings.public.SCROLLDELTAFACTOR = process.env.SCROLLDELTAFACTOR;
+  } else {
+    Meteor.settings.public.SCROLLDELTAFACTOR = 'auto';
+  }
 });
