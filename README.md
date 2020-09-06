@@ -1,9 +1,9 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wekan/wekan) 
 
 # Wekan - Open Source kanban
-[![CircleCI](https://circleci.com/gh/BjoernLudwigPTB/wekan/tree/wekan.svg?style=shield)](https://circleci.com/gh/BjoernLudwigPTB/wekan/tree/wekan)
-[![Get your own version badge on microbadger.com](https://images.microbadger.com/badges/version/bludoc/wekan:latest.svg)](https://microbadger.com/images/bludoc/wekan:latest)
-[![Get your own image badge on microbadger.com](https://images.microbadger.com/badges/image/bludoc/wekan:latest.svg)](https://microbadger.com/images/bludoc/wekan:latest)
+[![CircleCI](https://circleci.com/gh/PTB-PSt1/wekan/tree/wekan.svg?style=shield)](https://circleci.com/gh/PTB-PSt1/wekan/tree/wekan)
+[![Get your own version badge on microbadger.com](https://images.microbadger.com/badges/version/ptbpst1/wekan:latest.svg)](https://microbadger.com/images/ptbpst1/wekan:latest)
+[![Get your own image badge on microbadger.com](https://images.microbadger.com/badges/image/ptbpst1/wekan:latest.svg)](https://microbadger.com/images/ptbpst1/wekan:latest)
 
 [![Contributors](https://img.shields.io/github/contributors/wekan/wekan.svg "Contributors")](https://github.com/wekan/wekan/graphs/contributors)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/02137ecec4e34c5aa303f57637196a93 "Codacy Badge")](https://www.codacy.com/app/xet7/wekan?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wekan/wekan&amp;utm_campaign=Badge_Grade)
