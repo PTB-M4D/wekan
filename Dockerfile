@@ -1,4 +1,4 @@
-FROM ubuntu:rolling
+FROM ubuntu:groovy
 LABEL maintainer="Bjoern Ludwig <bjoern.ludwig@ptb.de>"
 
 # 2020-12-03:
