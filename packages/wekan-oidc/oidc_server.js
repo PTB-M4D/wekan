@@ -1,4 +1,17 @@
 Oidc = {};
+httpCa = false;
+
+if (process.env.OAUTH2_CA_CERT !== undefined) {
+    try {
+        const fs = Npm.require('fs');
+        if (fs.existsSync(process.env.OAUTH2_CA_CERT)) {
+          httpCa = fs.readFileSync(process.env.OAUTH2_CA_CERT);
+        }
+    } catch(e) {
+	console.log('WARNING: failed loading: ' + process.env.OAUTH2_CA_CERT);
+	console.log(e);
+    }
+}
 
 OAuth.registerService('oidc', 2, null, function (query) {
 
@@ -86,9 +99,7 @@ if (process.env.ORACLE_OIM_ENABLED !== 'true' && process.env.ORACLE_OIM_ENABLED 
     var response;
 
     try {
-      response = HTTP.post(
-        serverTokenEndpoint,
-        {
+      var postOptions = {
           headers: {
             Accept: 'application/json',
             "User-Agent": userAgent
@@ -101,8 +112,11 @@ if (process.env.ORACLE_OIM_ENABLED !== 'true' && process.env.ORACLE_OIM_ENABLED 
             grant_type: 'authorization_code',
             state: query.state
           }
-        }
-      );
+        };
+      if (httpCa) {
+	postOptions['npmRequestOptions'] = { ca: httpCa };
+      }
+      response = HTTP.post(serverTokenEndpoint, postOptions);
     } catch (err) {
       throw _.extend(new Error("Failed to get token from OIDC " + serverTokenEndpoint + ": " + err.message),
         { response: err.response });
@@ -143,9 +157,7 @@ if (process.env.ORACLE_OIM_ENABLED === 'true' || process.env.ORACLE_OIM_ENABLED 
     if (debug) console.log('Basic Token: ', strBasicToken64);
 
     try {
-      response = HTTP.post(
-        serverTokenEndpoint,
-        {
+      var postOptions = {
           headers: {
             Accept: 'application/json',
             "User-Agent": userAgent,
@@ -159,8 +171,11 @@ if (process.env.ORACLE_OIM_ENABLED === 'true' || process.env.ORACLE_OIM_ENABLED 
             grant_type: 'authorization_code',
             state: query.state
           }
-        }
-      );
+        };
+      if (httpCa) {
+	postOptions['npmRequestOptions'] = { ca: httpCa };
+      }
+      response = HTTP.post(serverTokenEndpoint, postOptions);
     } catch (err) {
       throw _.extend(new Error("Failed to get token from OIDC " + serverTokenEndpoint + ": " + err.message),
         { response: err.response });
@@ -188,15 +203,16 @@ var getUserInfo = function (accessToken) {
   }
   var response;
   try {
-    response = HTTP.get(
-      serverUserinfoEndpoint,
-      {
+    var getOptions = {
         headers: {
           "User-Agent": userAgent,
           "Authorization": "Bearer " + accessToken
         }
-      }
-    );
+      };
+    if (httpCa) {
+      getOptions['npmRequestOptions'] = { ca: httpCa };
+    }
+    response = HTTP.get(serverUserinfoEndpoint, getOptions);
   } catch (err) {
     throw _.extend(new Error("Failed to fetch userinfo from OIDC " + serverUserinfoEndpoint + ": " + err.message),
                    {response: err.response});

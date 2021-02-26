@@ -15,11 +15,18 @@ template(name="cardActivities")
   each activityData in currentCard.activities
     +activity(activity=activityData card=card mode=mode)
 
+template(name="editOrDeleteComment")
+  = ' - '
+  a.js-open-inlined-form {{_ "edit"}}
+  = ' - '
+  a.js-delete-comment {{_ "delete"}}
+
 template(name="activity")
   .activity
     +userAvatar(userId=activity.user._id)
     p.activity-desc
-      +memberName(user=activity.user)
+      span.activity-member
+        +memberName(user=activity.user)
 
       //- attachment activity -------------------------------------------------
       if($eq activity.activityType 'deleteAttachment')
@@ -118,11 +125,10 @@ template(name="activity")
               +viewer
                 = activity.comment.text
             span(title=activity.createdAt).activity-meta {{ moment activity.createdAt }}
-              if ($eq currentUser._id activity.comment.userId)
-                = ' - '
-                a.js-open-inlined-form {{_ "edit"}}
-                = ' - '
-                a.js-delete-comment {{_ "delete"}}
+              if($eq currentUser._id activity.comment.userId)
+                +editOrDeleteComment
+              else if currentUser.isBoardAdmin
+                +editOrDeleteComment
 
         if($eq activity.activityType 'deleteComment')
           | {{{_ 'activity-deleteComment' currentData.commentId}}}.
@@ -136,6 +142,33 @@ template(name="activity")
           a.activity-comment(href="{{ activity.card.absoluteUrl }}")
             +viewer
               = activity.comment.text
+
+      //- date activity ------------------------------------------------
+      if($eq mode 'card')
+        if($eq activity.activityType 'a-receivedAt')
+          | {{{_ 'activity-receivedDate' (sanitize receivedDate) cardLink}}}.
+
+        if($eq activity.activityType 'a-startAt')
+          | {{{_ 'activity-startDate' (sanitize startDate) cardLink}}}.
+        
+        if($eq activity.activityType 'a-dueAt')
+          | {{{_ 'activity-dueDate' (sanitize dueDate) cardLink}}}.
+
+        if($eq activity.activityType 'a-endAt')
+          | {{{_ 'activity-endDate' (sanitize endDate) cardLink}}}.
+      
+      if($eq mode 'board')
+        if($eq activity.activityType 'a-receivedAt')
+          | {{{_ 'activity-receivedDate' (sanitize receivedDate) cardLink}}}.
+
+        if($eq activity.activityType 'a-startAt')
+          | {{{_ 'activity-startDate' (sanitize startDate) cardLink}}}.
+        
+        if($eq activity.activityType 'a-dueAt')
+          | {{{_ 'activity-dueDate' (sanitize dueDate) cardLink}}}.
+
+        if($eq activity.activityType 'a-endAt')
+          | {{{_ 'activity-endDate' (sanitize endDate) cardLink}}}.
 
       //- customField activity ------------------------------------------------
       if($eq mode 'board')

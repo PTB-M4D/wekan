@@ -80,6 +80,25 @@ CardCustomField.register('cardCustomField');
   }
 }.register('cardCustomField-number'));
 
+// cardCustomField-checkbox
+(class extends CardCustomField {
+  onCreated() {
+    super.onCreated();
+  }
+
+  toggleItem() {
+    this.card.setCustomField(this.customFieldId, !this.data().value);
+  }
+
+  events() {
+    return [
+      {
+        'click .js-checklist-item .check-box-container': this.toggleItem,
+      },
+    ];
+  }
+}.register('cardCustomField-checkbox'));
+
 // cardCustomField-currency
 (class extends CardCustomField {
   onCreated() {
@@ -102,7 +121,8 @@ CardCustomField.register('cardCustomField');
       {
         'submit .js-card-customfield-currency'(event) {
           event.preventDefault();
-          const value = Number(this.find('input').value, 10);
+          // To allow input separated by comma, the comma is replaced by a period.
+          const value = Number(this.find('input').value.replace(/,/i, '.'), 10);
           this.card.setCustomField(this.customFieldId, value);
         },
       },

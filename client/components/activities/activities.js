@@ -1,6 +1,6 @@
 import sanitizeXss from 'xss';
 
-const activitiesPerPage = 20;
+const activitiesPerPage = 500;
 
 BlazeComponent.extendComponent({
   onCreated() {
@@ -79,6 +79,30 @@ BlazeComponent.extendComponent({
 
   cardLink() {
     return createCardLink(this.currentData().activity.card());
+  },
+
+  receivedDate() {
+    const receivedDate = this.currentData().activity.card();
+    if (!receivedDate) return null;
+    return receivedDate.receivedAt;
+  },
+
+  startDate() {
+    const startDate = this.currentData().activity.card();
+    if (!startDate) return null;
+    return startDate.startAt;
+  },
+
+  dueDate() {
+    const dueDate = this.currentData().activity.card();
+    if (!dueDate) return null;
+    return dueDate.dueAt;
+  },
+
+  endDate() {
+    const endDate = this.currentData().activity.card();
+    if (!endDate) return null;
+    return endDate.endAt;
   },
 
   lastLabel() {
