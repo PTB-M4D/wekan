@@ -21,9 +21,9 @@ workflows:
   build_and_deploy:
     jobs:
       - build:
-          context: Docker publishing as ptbpst1
+          context: Docker publishing as bludoc
       - test_and_deploy:
-          context: Docker publishing as ptbpst1
+          context: Docker publishing as bludoc
           requires:
             - build
 
@@ -43,12 +43,12 @@ jobs:
           name: Build image
           no_output_timeout: 50m
           command: |
-            docker build -t $DOCKER_ORG/$IMAGE_NAME:$TAG .
+            docker build -t $DOCKER_USER/$IMAGE_NAME:$TAG .
 
       # Save the image.
       - run:
           name: Save Docker image
-          command: docker save -o image.tar $DOCKER_ORG/$IMAGE_NAME:$TAG
+          command: docker save -o image.tar $DOCKER_USER/$IMAGE_NAME:$TAG
 
       # Permanently store the built image to test and potentially deploy it.
       - persist_to_workspace:
@@ -76,7 +76,7 @@ jobs:
       - run:
           name: Test images
           command: |
-            docker run -d $DOCKER_ORG/$IMAGE_NAME:$TAG
+            docker run -d $DOCKER_USER/$IMAGE_NAME:$TAG
             docker ps | grep $TAG
 
       # Push image.
@@ -86,4 +86,4 @@ jobs:
             echo $DOCKER_PASS | docker login \
               --username $DOCKER_USER --password-stdin
 
-            docker push $DOCKER_ORG/$IMAGE_NAME:$TAG
+            docker push $DOCKER_USER/$IMAGE_NAME:$TAG
