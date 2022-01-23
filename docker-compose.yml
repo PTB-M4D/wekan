@@ -122,7 +122,7 @@ services:
     # b) Using specific version tag:
     # image: quay.io/wekan/wekan:v4.52
     # c) Docker Hub builds do work https://hub.docker.com/r/wekanteam/wekan
-    image: ptbpst1/wekan
+    image: bludoc/wekan
     # image: wekanteam/wekan
     #-------------------------------------------------------------------------------------
     container_name: wekan-app
