@@ -16,11 +16,18 @@
       # https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
       # https://github.com/wekan/wekan-mongodb/blob/master/docker-compose.yml
       export MAIL_URL='smtp://user:pass@mailserver.example.com:25/'
+      export MAIL_FROM='Wekan Boards <info@example.com>'
+      #export MAIL_SERVICE=Outlook365
+      #export MAIL_SERVICE_USER=firstname.lastname@hotmail.com
+      #export MAIL_SERVICE_PASSWORD=SecretPassword
       #---------------------------------------------
       #export KADIRA_OPTIONS_ENDPOINT=http://127.0.0.1:11011
       #---------------------------------------------
       # This is local port where Wekan Node.js runs, same as below on Caddyfile settings.
       export PORT=2000
+      #---------------------------------------------
+      # ==== NUMBER OF SEARCH RESULTS PER PAGE BY DEFAULT ====
+      #export RESULTS_PER_PAGE=20
       #---------------------------------------------
       # Wekan Export Board works when WITH_API=true.
       # If you disable Wekan API with false, Export Board does not work.
@@ -35,6 +42,11 @@
       #export ACCOUNTS_LOCKOUT_UNKNOWN_USERS_FAILURES_BERORE=3
       #export ACCOUNTS_LOCKOUT_UNKNOWN_USERS_LOCKOUT_PERIOD=60
       #export ACCOUNTS_LOCKOUT_UNKNOWN_USERS_FAILURE_WINDOW=15
+      #---------------------------------------------------------------
+      # ==== ACCOUNT OPTIONS ====
+      # https://docs.meteor.com/api/accounts-multi.html#AccountsCommon-config
+      # Defaults below. Uncomment to change. wekan/server/accounts-common.js
+      # - ACCOUNTS_COMMON_LOGIN_EXPIRATION_IN_DAYS=90
       #---------------------------------------------------------------
       # ==== RICH TEXT EDITOR IN CARD COMMENTS ====
       # https://github.com/wekan/wekan/pull/2560
@@ -183,7 +195,7 @@
       # OAUTH2 ID Token Whitelist Fields.
       #export OAUTH2_ID_TOKEN_WHITELIST_FIELDS=[]
       # OAUTH2 Request Permissions.
-      #export OAUTH2_REQUEST_PERMISSIONS='openid profile email'
+      #export OAUTH2_REQUEST_PERMISSIONS=openid profile email
       # OAuth2 ID Mapping
       #export OAUTH2_ID_MAP=
       # OAuth2 Username Mapping
@@ -378,6 +390,9 @@
       #export SAML_IDENTIFIER_FORMAT=
       #export SAML_LOCAL_PROFILE_MATCH_ATTRIBUTE=
       #export SAML_ATTRIBUTES=
+      #---------------------------------------------------------------------
+      # Wait spinner to use
+      #export WAIT_SPINNER=Bounce
       #---------------------------------------------------------------------
 
       node main.js & >> ~/repos/wekan.log

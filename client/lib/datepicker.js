@@ -6,17 +6,17 @@ function adjustedTimeFormat() {
     .replace(/HH/i, 'H');
 }
 
-DatePicker = BlazeComponent.extendComponent({
+export class DatePicker extends BlazeComponent {
   template() {
     return 'datepicker';
-  },
+  }
 
   onCreated(defaultTime = '1970-01-01 08:00:00') {
     this.error = new ReactiveVar('');
     this.card = this.data();
     this.date = new ReactiveVar(moment.invalid());
     this.defaultTime = defaultTime;
-  },
+  }
 
   startDayOfWeek() {
     const currentUser = Meteor.user();
@@ -25,7 +25,7 @@ DatePicker = BlazeComponent.extendComponent({
     } else {
       return 1;
     }
-  },
+  }
 
   onRendered() {
     const $picker = this.$('.js-datepicker')
@@ -34,6 +34,7 @@ DatePicker = BlazeComponent.extendComponent({
         todayBtn: 'linked',
         language: TAPi18n.getLanguage(),
         weekStart: this.startDayOfWeek(),
+        calendarWeeks: true,
       })
       .on(
         'changeDate',
@@ -42,7 +43,7 @@ DatePicker = BlazeComponent.extendComponent({
           this.error.set('');
           const timeInput = this.find('#time');
           timeInput.focus();
-          if (!timeInput.value) {
+          if (!timeInput.value && this.defaultTime) {
             const currentHour = evt.date.getHours();
             const defaultMoment = moment(
               currentHour > 0 ? evt.date : this.defaultTime,
@@ -55,22 +56,22 @@ DatePicker = BlazeComponent.extendComponent({
     if (this.date.get().isValid()) {
       $picker.datepicker('update', this.date.get().toDate());
     }
-  },
+  }
 
   showDate() {
     if (this.date.get().isValid()) return this.date.get().format('L');
     return '';
-  },
+  }
   showTime() {
     if (this.date.get().isValid()) return this.date.get().format('LT');
     return '';
-  },
+  }
   dateFormat() {
     return moment.localeData().longDateFormat('L');
-  },
+  }
   timeFormat() {
     return moment.localeData().longDateFormat('LT');
-  },
+  }
 
   events() {
     return [
@@ -106,7 +107,7 @@ DatePicker = BlazeComponent.extendComponent({
           const dateString = `${evt.target.date.value} ${time}`;
           const newCompleteDate = moment(
             dateString,
-            'L ' + adjustedTimeFormat(),
+            `L ${adjustedTimeFormat()}`,
             true,
           );
           if (!newTime.isValid()) {
@@ -119,19 +120,17 @@ DatePicker = BlazeComponent.extendComponent({
           }
           if (newCompleteDate.isValid()) {
             this._storeDate(newCompleteDate.toDate());
-            Popup.close();
-          } else {
-            if (!this.error) {
-              this.error.set('invalid');
-            }
+            Popup.back();
+          } else if (!this.error) {
+            this.error.set('invalid');
           }
         },
         'click .js-delete-date'(evt) {
           evt.preventDefault();
           this._deleteDate();
-          Popup.close();
+          Popup.back();
         },
       },
     ];
-  },
-});
+  }
+}

@@ -28,19 +28,6 @@ BlazeComponent.extendComponent({
   },
 }).register('swimlaneHeader');
 
-Template.swimlaneHeader.helpers({
-  showDesktopDragHandles() {
-    currentUser = Meteor.user();
-    if (currentUser) {
-      return (currentUser.profile || {}).showDesktopDragHandles;
-    } else if (window.localStorage.getItem('showDesktopDragHandles')) {
-      return true;
-    } else {
-      return false;
-    }
-  },
-});
-
 Template.swimlaneFixedHeader.helpers({
   isBoardAdmin() {
     return Meteor.user().isBoardAdmin();
@@ -52,11 +39,13 @@ Template.swimlaneActionPopup.events({
   'click .js-close-swimlane'(event) {
     event.preventDefault();
     this.archive();
-    Popup.close();
+    Popup.back();
   },
+  'click .js-move-swimlane': Popup.open('moveSwimlane'),
+  'click .js-copy-swimlane': Popup.open('copySwimlane'),
 });
 
-Template.swimlaneActionPopup.helpers({
+Template.swimlaneActionPopup.events({
   isCommentOnly() {
     return Meteor.user().isCommentOnly();
   },
@@ -99,7 +88,7 @@ BlazeComponent.extendComponent({
           // XXX ideally, we should move the popup to the newly
           // created swimlane so a user can add more than one swimlane
           // with a minimum of interactions
-          Popup.close();
+          Popup.back();
         },
         'click .js-swimlane-template': Popup.open('searchElement'),
       },
@@ -129,11 +118,11 @@ BlazeComponent.extendComponent({
         },
         'click .js-submit'() {
           this.currentSwimlane.setColor(this.currentColor.get());
-          Popup.close();
+          Popup.back();
         },
         'click .js-remove-color'() {
           this.currentSwimlane.setColor(null);
-          Popup.close();
+          Popup.back();
         },
       },
     ];

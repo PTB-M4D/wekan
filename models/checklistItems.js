@@ -266,6 +266,7 @@ if (Meteor.isServer) {
     '/api/boards/:boardId/cards/:cardId/checklists/:checklistId/items/:itemId',
     function(req, res) {
       Authentication.checkUserId(req.userId);
+      const paramBoardId = req.params.boardId;
       const paramItemId = req.params.itemId;
       const checklistItem = ChecklistItems.findOne({ _id: paramItemId });
       if (checklistItem) {
@@ -299,7 +300,7 @@ if (Meteor.isServer) {
     '/api/boards/:boardId/cards/:cardId/checklists/:checklistId/items/:itemId',
     function(req, res) {
       Authentication.checkUserId(req.userId);
-
+      const paramBoardId = req.params.boardId;
       const paramItemId = req.params.itemId;
 
       function isTrue(data) {
@@ -350,6 +351,7 @@ if (Meteor.isServer) {
     '/api/boards/:boardId/cards/:cardId/checklists/:checklistId/items/:itemId',
     function(req, res) {
       Authentication.checkUserId(req.userId);
+      const paramBoardId = req.params.boardId;
       const paramItemId = req.params.itemId;
       ChecklistItems.direct.remove({ _id: paramItemId });
       JsonRoutes.sendResult(res, {

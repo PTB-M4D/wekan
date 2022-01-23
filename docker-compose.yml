@@ -68,7 +68,7 @@ version: '2'
 #             docker exec -it wekan-db bash
 #      # 3) and data directory
 #             cd /data
-#      # 4) Remove previos dump
+#      # 4) Remove previous dump
 #             rm -rf dump
 #      # 5) Exit db container
 #             exit
@@ -111,6 +111,8 @@ services:
     expose:
       - 27017
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - wekan-db:/data/db
       - wekan-db-dump:/dump
 
@@ -159,7 +161,8 @@ services:
       - ROOT_URL=http://localhost  #   <=== using only at same laptop/desktop where Wekan is installed
       #---------------------------------------------------------------
       # ==== EMAIL SETTINGS ====
-      # Email settings are required in both MAIL_URL and Admin Panel,
+      # Email settings are only at MAIL_URL and MAIL_FROM.
+      # Admin Panel has test button, but it's not used for settings.
       #   see https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
       #   For SSL in email, change smtp:// to smtps://
       # NOTE: Special characters need to be url-encoded in MAIL_URL.
@@ -167,6 +170,10 @@ services:
       #- MAIL_URL=smtp://user:pass@mailserver.example.com:25/
       - MAIL_URL=smtp://<mail_url>:25/?ignoreTLS=true&tls={rejectUnauthorized:false}
       - MAIL_FROM=Wekan Notifications <noreply.wekan@mydomain.com>
+      # Currently MAIL_SERVICE is not in use.
+      #- MAIL_SERVICE=Outlook365
+      #- MAIL_SERVICE_USER=firstname.lastname@hotmail.com
+      #- MAIL_SERVICE_PASSWORD=SecretPassword
       #---------------------------------------------------------------
       # ==== OPTIONAL: MONGO OPLOG SETTINGS =====
       # https://github.com/wekan/wekan-mongodb/issues/2#issuecomment-378343587
@@ -210,6 +217,9 @@ services:
       # There is Feature Request: Logging date and time of all activity with summary reports,
       # and requesting reason for changing card to other column https://github.com/wekan/wekan/issues/1598
       #---------------------------------------------------------------
+      # ==== NUMBER OF SEARCH RESULTS PER PAGE BY DEFAULT ====
+      #- RESULTS_PER_PAGE=20
+      #---------------------------------------------------------------
       # ==== WEKAN API AND EXPORT BOARD ====
       # Wekan Export Board works when WITH_API=true.
       # https://github.com/wekan/wekan/wiki/REST-API
@@ -226,6 +236,11 @@ services:
       #- ACCOUNTS_LOCKOUT_UNKNOWN_USERS_FAILURES_BERORE=3
       #- ACCOUNTS_LOCKOUT_UNKNOWN_USERS_LOCKOUT_PERIOD=60
       #- ACCOUNTS_LOCKOUT_UNKNOWN_USERS_FAILURE_WINDOW=15
+      #---------------------------------------------------------------
+      # ==== ACCOUNT OPTIONS ====
+      # https://docs.meteor.com/api/accounts-multi.html#AccountsCommon-config
+      # Defaults below. Uncomment to change. wekan/server/accounts-common.js
+      # - ACCOUNTS_COMMON_LOGIN_EXPIRATION_IN_DAYS=90
       #---------------------------------------------------------------
       # ==== STORE ATTACHMENT ON SERVER FILESYSTEM INSTEAD OF MONGODB ====
       # https://github.com/wekan/wekan/pull/2603
@@ -279,7 +294,7 @@ services:
       #- NOTIFY_DUE_AT_HOUR_OF_DAY=8
       #-----------------------------------------------------------------
       # ==== EMAIL NOTIFICATION TIMEOUT, ms =====
-      # Defaut: 30000 ms = 30s
+      # Default: 30000 ms = 30s
       #- EMAIL_NOTIFICATION_TIMEOUT=30000
       #-----------------------------------------------------------------
       # ==== CORS =====
@@ -346,7 +361,7 @@ services:
       #- OAUTH2_USERNAME_MAP=email
       # The claim name you want to map to the full name field:
       #- OAUTH2_FULLNAME_MAP=name
-      # Tthe claim name you want to map to the email field:
+      # The claim name you want to map to the email field:
       #- OAUTH2_EMAIL_MAP=email
       #-----------------------------------------------------------------
       # ==== OAUTH2 Nextcloud ====
@@ -372,7 +387,7 @@ services:
       #- OAUTH2_USERNAME_MAP=id
       # The claim name you want to map to the full name field:
       #- OAUTH2_FULLNAME_MAP=display-name
-      # Tthe claim name you want to map to the email field:
+      # The claim name you want to map to the email field:
       #- OAUTH2_EMAIL_MAP=email
       #-----------------------------------------------------------------
       # ==== OAUTH2 KEYCLOAK ====
@@ -438,9 +453,47 @@ services:
       # The host server for the LDAP server
       #- LDAP_HOST=localhost
       #
+      #-----------------------------------------------------------------
+      # ==== LDAP AD Simple Auth ====
+      #
+      # Set to true, if you want to connect with Active Directory by Simple Authentication.
+      # When using AD Simple Auth, LDAP_BASEDN is not needed.
+      #
+      # Example:
+      #- LDAP_AD_SIMPLE_AUTH=true
+      #
+      # === LDAP User Authentication ===
+      #
+      # a) Option to login to the LDAP server with the user's own username and password, instead of
+      #    an administrator key. Default: false (use administrator key).
+      #
+      # b) When using AD Simple Auth, set to true, when login user is used for binding,
+      #    and LDAP_BASEDN is not needed.
+      #
+      # Example:
+      #- LDAP_USER_AUTHENTICATION=true
+      #
+      # Which field is used to find the user for the user authentication. Default: uid.
+      #- LDAP_USER_AUTHENTICATION_FIELD=uid
+      #
+      # === LDAP Default Domain ===
+      #
+      # a) In case AD SimpleAuth is configured, the default domain is appended to the given
+      #    loginname for creating the correct username for the bind request to AD.
+      #
+      # b) The default domain of the ldap it is used to create email if the field is not map
+      #     correctly with the LDAP_SYNC_USER_DATA_FIELDMAP
+      #
+      # Example :
+      #- LDAP_DEFAULT_DOMAIN=mydomain.com
+      #
+      #-----------------------------------------------------------------
+      # ==== LDAP BASEDN Auth ====
+      #
       # The base DN for the LDAP Tree
       #- LDAP_BASEDN=ou=user,dc=example,dc=org
       #
+      #-----------------------------------------------------------------
       # Fallback on the default authentication method
       #- LDAP_LOGIN_FALLBACK=false
       #
@@ -491,12 +544,6 @@ services:
       # Reject Unauthorized Certificate
       #- LDAP_REJECT_UNAUTHORIZED=false
       #
-      # Option to login to the LDAP server with the user's own username and password, instead of an administrator key. Default: false (use administrator key).
-      #- LDAP_USER_AUTHENTICATION=true
-      #
-      # Which field is used to find the user for the user authentication. Default: uid.
-      #- LDAP_USER_AUTHENTICATION_FIELD=uid
-      #
       # Optional extra LDAP filters. Don't forget the outmost enclosing parentheses if needed
       #- LDAP_USER_SEARCH_FILTER=
       #
@@ -524,7 +571,7 @@ services:
       # The attribute inside a group object listing its members. Example: member
       #- LDAP_GROUP_FILTER_GROUP_MEMBER_ATTRIBUTE=
       #
-      # The format of the value of LDAP_GROUP_FILTER_GROUP_MEMBER_ATTRIBUTE. Example: 'dn' if the users dn ist saved as value into the attribute.
+      # The format of the value of LDAP_GROUP_FILTER_GROUP_MEMBER_ATTRIBUTE. Example: 'dn' if the users dn is saved as value into the attribute.
       #- LDAP_GROUP_FILTER_GROUP_MEMBER_FORMAT=
       #
       # The group name (id) that matches all users.
@@ -562,9 +609,8 @@ services:
       #
       #- LDAP_SYNC_GROUP_ROLES=
       #
-      # The default domain of the ldap it is used to create email if the field is not map correctly with the LDAP_SYNC_USER_DATA_FIELDMAP
-      # example :
-      #- LDAP_DEFAULT_DOMAIN=mydomain.com
+      # The default domain of the ldap it is used to create email if the field is not map correctly
+      # with the LDAP_SYNC_USER_DATA_FIELDMAP is defined in setting LDAP_DEFAULT_DOMAIN above.
       #
       # Enable/Disable syncing of admin status based on ldap groups:
       #- LDAP_SYNC_ADMIN_STATUS=true
@@ -616,8 +662,13 @@ services:
       #- SAML_LOCAL_PROFILE_MATCH_ATTRIBUTE=
       #- SAML_ATTRIBUTES=
       #---------------------------------------------------------------------
+      # Wait spinner to use
+      # - WAIT_SPINNER=Bounce
+      #---------------------------------------------------------------------
     depends_on:
       - wekandb
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
 #---------------------------------------------------------------------------------
 # ==== OPTIONAL: SHARE DATABASE TO OFFICE LAN AND REMOTE VPN ====

@@ -1,20 +1,68 @@
 Utils = {
+  /** returns the current board id
+   * <li> returns the current board id or the board id of the popup card if set
+   */
+  getCurrentBoardId() {
+    let popupCardBoardId = Session.get('popupCardBoardId');
+    let currentBoard = Session.get('currentBoard');
+    let ret = currentBoard;
+    if (popupCardBoardId) {
+      ret = popupCardBoardId;
+    }
+    return ret;
+  },
+  getCurrentCardId(ignorePopupCard) {
+    let ret = Session.get('currentCard');
+    if (!ret && !ignorePopupCard) {
+      ret = Utils.getPopupCardId();
+    }
+    return ret;
+  },
+  getPopupCardId() {
+    const ret = Session.get('popupCardId');
+    return ret;
+  },
+  /** returns the current board
+   * <li> returns the current board or the board of the popup card if set
+   */
+  getCurrentBoard() {
+    const boardId = Utils.getCurrentBoardId();
+    const ret = Boards.findOne(boardId);
+    return ret;
+  },
+  getCurrentCard(ignorePopupCard) {
+    const cardId = Utils.getCurrentCardId(ignorePopupCard);
+    const ret = Cards.findOne(cardId);
+    return ret;
+  },
+  getPopupCard() {
+    const cardId = Utils.getPopupCardId();
+    const ret = Cards.findOne(cardId);
+    return ret;
+  },
+  reload () {
+    // we move all window.location.reload calls into this function
+    // so we can disable it when running tests.
+    // This is because we are not allowed to override location.reload but
+    // we can override Utils.reload to prevent reload during tests.
+    window.location.reload();
+  },
   setBoardView(view) {
     currentUser = Meteor.user();
     if (currentUser) {
       Meteor.user().setBoardView(view);
     } else if (view === 'board-view-swimlanes') {
       window.localStorage.setItem('boardView', 'board-view-swimlanes'); //true
-      location.reload();
+      Utils.reload();
     } else if (view === 'board-view-lists') {
       window.localStorage.setItem('boardView', 'board-view-lists'); //true
-      location.reload();
+      Utils.reload();
     } else if (view === 'board-view-cal') {
       window.localStorage.setItem('boardView', 'board-view-cal'); //true
-      location.reload();
+      Utils.reload();
     } else {
       window.localStorage.setItem('boardView', 'board-view-swimlanes'); //true
-      location.reload();
+      Utils.reload();
     }
   },
 
@@ -39,7 +87,7 @@ Utils = {
       return 'board-view-cal';
     } else {
       window.localStorage.setItem('boardView', 'board-view-swimlanes'); //true
-      location.reload();
+      Utils.reload();
       return 'board-view-swimlanes';
     }
   },
@@ -64,7 +112,7 @@ Utils = {
 
   setMyCardsSort(sort) {
     window.localStorage.setItem('myCardsSort', sort);
-    location.reload();
+    Utils.reload();
   },
 
   archivedBoardIds() {
@@ -87,7 +135,7 @@ Utils = {
 
   setDueCardsView(view) {
     window.localStorage.setItem('dueCardsView', view);
-    location.reload();
+    Utils.reload();
   },
 
   // XXX We should remove these two methods
@@ -241,6 +289,8 @@ Utils = {
     const currentUser = Meteor.user();
     if (currentUser) {
       return (currentUser.profile || {}).showDesktopDragHandles;
+    } else if (window.localStorage.getItem('showDesktopDragHandles')) {
+      return true;
     } else {
       return false;
     }
@@ -312,67 +362,6 @@ Utils = {
       base,
       increment,
     };
-  },
-
-  // Detect touch device
-  isTouchDevice() {
-    const isTouchable = (() => {
-      const prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
-      const mq = function(query) {
-        return window.matchMedia(query).matches;
-      };
-
-      if (
-        'ontouchstart' in window ||
-        (window.DocumentTouch && document instanceof window.DocumentTouch)
-      ) {
-        return true;
-      }
-
-      // include the 'heartz' as a way to have a non matching MQ to help terminate the join
-      // https://git.io/vznFH
-      const query = [
-        '(',
-        prefixes.join('touch-enabled),('),
-        'heartz',
-        ')',
-      ].join('');
-      return mq(query);
-    })();
-    Utils.isTouchDevice = () => isTouchable;
-    return isTouchable;
-  },
-
-  calculateTouchDistance(touchA, touchB) {
-    return Math.sqrt(
-      Math.pow(touchA.screenX - touchB.screenX, 2) +
-        Math.pow(touchA.screenY - touchB.screenY, 2),
-    );
-  },
-
-  enableClickOnTouch(selector) {
-    let touchStart = null;
-    let lastTouch = null;
-
-    $(document).on('touchstart', selector, function(e) {
-      touchStart = e.originalEvent.touches[0];
-    });
-    $(document).on('touchmove', selector, function(e) {
-      const touches = e.originalEvent.touches;
-      lastTouch = touches[touches.length - 1];
-    });
-    $(document).on('touchend', selector, function(e) {
-      if (
-        touchStart &&
-        lastTouch &&
-        Utils.calculateTouchDistance(touchStart, lastTouch) <= 20
-      ) {
-        e.preventDefault();
-        const clickEvent = document.createEvent('MouseEvents');
-        clickEvent.initEvent('click', true, true);
-        e.target.dispatchEvent(clickEvent);
-      }
-    });
   },
 
   manageCustomUI() {
@@ -475,6 +464,62 @@ Utils = {
       }
     }
     return finalString;
+  },
+
+  fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      document.execCommand('copy');
+      return Promise.resolve(true);
+    } catch (e) {
+      return Promise.reject(false);
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  },
+
+  /** copy the text to the clipboard
+   * @see https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript/30810322#30810322
+   * @param string copy this text to the clipboard
+   * @return Promise
+   */
+  copyTextToClipboard(text) {
+    let ret;
+    if (navigator.clipboard) {
+      ret = navigator.clipboard.writeText(text).then(function() {
+      }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+      });
+    } else {
+      ret = Utils.fallbackCopyTextToClipboard(text);
+    }
+    return ret;
+  },
+
+  /** show the "copied!" message
+   * @param promise the promise of Utils.copyTextToClipboard
+   * @param $tooltip jQuery tooltip element
+   */
+  showCopied(promise, $tooltip) {
+    if (promise) {
+      promise.then(() => {
+        $tooltip.show(100);
+        setTimeout(() => $tooltip.hide(100), 1000);
+      }, (err) => {
+        console.error("error: ", err);
+      });
+    }
   },
 };
 

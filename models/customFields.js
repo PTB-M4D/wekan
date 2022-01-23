@@ -29,6 +29,7 @@ CustomFields.attachSchema(
         'dropdown',
         'checkbox',
         'currency',
+        'stringtemplate',
       ],
     },
     settings: {
@@ -64,6 +65,14 @@ CustomFields.attachSchema(
         },
       }),
     },
+    'settings.stringtemplateFormat': {
+      type: String,
+      optional: true,
+    },
+    'settings.stringtemplateSeparator': {
+      type: String,
+      optional: true,
+    },
     showOnCard: {
       /**
        * should we show on the cards this custom field
@@ -88,6 +97,13 @@ CustomFields.attachSchema(
     showLabelOnMiniCard: {
       /**
        * should the label of the custom field be shown on minicards?
+       */
+      type: Boolean,
+      defaultValue: false,
+    },
+    showSumAtTopOfList: {
+      /**
+       * should the sum of the custom fields be shown at top of list?
        */
       type: Boolean,
       defaultValue: false,
@@ -307,7 +323,8 @@ if (Meteor.isServer) {
    *
    * @param {string} boardID the ID of the board
    * @param {string} customFieldId the ID of the custom field
-   * @return_type CustomFields
+   * @return_type [{_id: string,
+   *                boardIds: string}]
    */
   JsonRoutes.add(
     'GET',
@@ -337,6 +354,7 @@ if (Meteor.isServer) {
    * @param {boolean} showOnCard should we show the custom field on cards?
    * @param {boolean} automaticallyOnCard should the custom fields automatically be added on cards?
    * @param {boolean} showLabelOnMiniCard should the label of the custom field be shown on minicards?
+   * @param {boolean} showSumAtTopOfList should the sum of the custom fields be shown at top of list?
    * @return_type {_id: string}
    */
   JsonRoutes.add('POST', '/api/boards/:boardId/custom-fields', function(
@@ -353,6 +371,7 @@ if (Meteor.isServer) {
       showOnCard: req.body.showOnCard,
       automaticallyOnCard: req.body.automaticallyOnCard,
       showLabelOnMiniCard: req.body.showLabelOnMiniCard,
+      showSumAtTopOfList: req.body.showSumAtTopOfList,
       boardIds: [board._id],
     });
 
@@ -369,6 +388,201 @@ if (Meteor.isServer) {
       },
     });
   });
+
+  /**
+   * @operation edit_custom_field
+   * @summary Update a Custom Field
+   *
+   * @param {string} name the name of the custom field
+   * @param {string} type the type of the custom field
+   * @param {string} settings the settings object of the custom field
+   * @param {boolean} showOnCard should we show the custom field on cards
+   * @param {boolean} automaticallyOnCard should the custom fields automatically be added on cards
+   * @param {boolean} showLabelOnMiniCard should the label of the custom field be shown on minicards
+   * @param {boolean} showSumAtTopOfList should the sum of the custom fields be shown at top of list
+   * @return_type {_id: string}
+   */
+  JsonRoutes.add(
+    'PUT',
+    '/api/boards/:boardId/custom-fields/:customFieldId',
+    (req, res) => {
+      Authentication.checkUserId(req.userId);
+      const paramBoardId = req.params.boardId;
+      const paramFieldId = req.params.customFieldId;
+
+      if (req.body.hasOwnProperty('name')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { name: req.body.name } },
+        );
+      }
+      if (req.body.hasOwnProperty('type')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { type: req.body.type } },
+        );
+      }
+      if (req.body.hasOwnProperty('settings')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { settings: req.body.settings } },
+        );
+      }
+      if (req.body.hasOwnProperty('showOnCard')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { showOnCard: req.body.showOnCard } },
+        );
+      }
+      if (req.body.hasOwnProperty('automaticallyOnCard')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { automaticallyOnCard: req.body.automaticallyOnCard } },
+        );
+      }
+      if (req.body.hasOwnProperty('alwaysOnCard')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { alwaysOnCard: req.body.alwaysOnCard } },
+        );
+      }
+      if (req.body.hasOwnProperty('showLabelOnMiniCard')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { showLabelOnMiniCard: req.body.showLabelOnMiniCard } },
+        );
+      }
+
+      if (req.body.hasOwnProperty('showSumAtTopOfList')) {
+        CustomFields.direct.update(
+          { _id: paramFieldId },
+          { $set: { showSumAtTopOfList: req.body.showSumAtTopOfList } },
+        );
+      }
+
+
+      JsonRoutes.sendResult(res, {
+        code: 200,
+        data: { _id: paramFieldId },
+      });
+    },
+  );
+
+  /**
+   * @operation add_custom_field_dropdown_items
+   * @summary Update a Custom Field's dropdown items
+   *
+   * @param {string} [items] names of the custom field
+   * @return_type {_id: string}
+   */
+  JsonRoutes.add(
+    'POST',
+    '/api/boards/:boardId/custom-fields/:customFieldId/dropdown-items',
+    (req, res) => {
+      Authentication.checkUserId(req.userId);
+      const paramBoardId = req.params.boardId;
+      const paramCustomFieldId = req.params.customFieldId;
+      const paramItems = req.body.items;
+
+      if (req.body.hasOwnProperty('items')) {
+        if (Array.isArray(paramItems)) {
+          CustomFields.direct.update(
+            { _id: paramCustomFieldId },
+            {
+              $push: {
+                'settings.dropdownItems': {
+                  $each: paramItems
+                    .filter(name => typeof name === 'string')
+                    .map(name => ({
+                      _id: Random.id(6),
+                      name,
+                    })),
+                },
+              },
+            },
+          );
+        }
+      }
+
+      JsonRoutes.sendResult(res, {
+        code: 200,
+        data: { _id: paramCustomFieldId },
+      });
+    },
+  );
+
+  /**
+   * @operation edit_custom_field_dropdown_item
+   * @summary Update a Custom Field's dropdown item
+   *
+   * @param {string} name names of the custom field
+   * @return_type {_id: string}
+   */
+  JsonRoutes.add(
+    'PUT',
+    '/api/boards/:boardId/custom-fields/:customFieldId/dropdown-items/:dropdownItemId',
+    (req, res) => {
+      Authentication.checkUserId(req.userId);
+      const paramBoardId = req.params.boardId;
+      const paramDropdownItemId = req.params.dropdownItemId;
+      const paramCustomFieldId = req.params.customFieldId;
+      const paramName = req.body.name;
+
+      if (req.body.hasOwnProperty('name')) {
+        CustomFields.direct.update(
+          {
+            _id: paramCustomFieldId,
+            'settings.dropdownItems._id': paramDropdownItemId,
+          },
+          {
+            $set: {
+              'settings.dropdownItems.$': {
+                _id: paramDropdownItemId,
+                name: paramName,
+              },
+            },
+          },
+        );
+      }
+
+      JsonRoutes.sendResult(res, {
+        code: 200,
+        data: { _id: customFieldId },
+      });
+    },
+  );
+
+  /**
+   * @operation delete_custom_field_dropdown_item
+   * @summary Update a Custom Field's dropdown items
+   *
+   * @param {string} itemId ID of the dropdown item
+   * @return_type {_id: string}
+   */
+  JsonRoutes.add(
+    'DELETE',
+    '/api/boards/:boardId/custom-fields/:customFieldId/dropdown-items/:dropdownItemId',
+    (req, res) => {
+      Authentication.checkUserId(req.userId);
+      const paramBoardId = req.params.boardId;
+      paramCustomFieldId = req.params.customFieldId;
+      paramDropdownItemId = req.params.dropdownItemId;
+
+      CustomFields.direct.update(
+        { _id: paramCustomFieldId },
+        {
+          $pull: {
+            'settings.dropdownItems': { _id: paramDropdownItemId },
+          },
+        },
+      );
+
+      JsonRoutes.sendResult(res, {
+        code: 200,
+        data: { _id: paramCustomFieldId },
+      });
+    },
+  );
 
   /**
    * @operation delete_custom_field

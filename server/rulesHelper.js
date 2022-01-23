@@ -1,3 +1,5 @@
+//var nodemailer = require('nodemailer');
+
 RulesHelper = {
   executeRules(activity) {
     const matchingRules = this.findMatchingRules(activity);
@@ -29,14 +31,30 @@ RulesHelper = {
   },
   buildMatchingFieldsMap(activity, matchingFields) {
     const matchingMap = { activityType: activity.activityType };
-    for (let i = 0; i < matchingFields.length; i++) {
+    matchingFields.forEach(field => {
       // Creating a matching map with the actual field of the activity
       // and with the wildcard (for example: trigger when a card is added
       // in any [*] board
-      matchingMap[matchingFields[i]] = {
-        $in: [activity[matchingFields[i]], '*'],
+      let value = activity[field];
+      if (field === 'oldListName') {
+        const oldList = Lists.findOne({ _id: activity.oldListId });
+        if (oldList) {
+          value = oldList.title;
+        }
+      } else if (field === 'oldSwimlaneName') {
+        const oldSwimlane = Swimlanes.findOne({ _id: activity.oldSwimlaneId });
+        if (oldSwimlane) {
+          value = oldSwimlane.title;
+        }
+      }
+      let matchesList = [value, '*'];
+      if ((field === 'cardTitle') && (value !== undefined)) {
+        matchesList = value.split(/\W/).concat(matchesList);
+      }
+      matchingMap[field] = {
+        $in: matchesList,
       };
-    }
+    });
     return matchingMap;
   },
   performAction(activity, action) {
@@ -107,6 +125,30 @@ RulesHelper = {
       const text = action.emailMsg || '';
       const subject = action.emailSubject || '';
       try {
+/*
+        if (process.env.MAIL_SERVICE !== '') {
+          let transporter = nodemailer.createTransport({
+            service: process.env.MAIL_SERVICE,
+            auth: {
+              user: process.env.MAIL_SERVICE_USER,
+              pass: process.env.MAIL_SERVICE_PASSWORD
+            },
+          })
+          let info = transporter.sendMail({
+            to,
+            from: Accounts.emailTemplates.from,
+            subject,
+            text,
+          })
+        } else {
+          Email.send({
+            to,
+            from: Accounts.emailTemplates.from,
+            subject,
+            text,
+          });
+        }
+*/
         Email.send({
           to,
           from: Accounts.emailTemplates.from,

@@ -317,6 +317,9 @@ kbd
 .grabbing
   cursor: grabbing
 
+.textcomplete-dropdown
+  z-index: 2000 !important;
+
 // Implement a thiner close icon as suggested in
 // https://github.com/FortAwesome/Font-Awesome/issues/1540#issuecomment-68689950
 .fa.fa-times-thin:before
@@ -430,7 +433,7 @@ a
       margin-top: 0px
 
   .wrapper
-    height: 100%
+    height: calc(100% - 31px)
     margin: 0px
 
   .panel-default
@@ -539,3 +542,11 @@ a
 
   100%
     transform: rotate(360deg)
+
+#isSettingDatabaseCallDone
+  display: none;
+
+.at-link
+  color: #17683a;
+  text-decoration: underline;
+  text-decoration-color: #17683a;

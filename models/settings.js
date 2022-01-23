@@ -1,3 +1,10 @@
+//var nodemailer = require('nodemailer');
+
+// Sandstorm context is detected using the METEOR_SETTINGS environment variable
+// in the package definition.
+const isSandstorm =
+  Meteor.settings && Meteor.settings.public && Meteor.settings.public.sandstorm;
+
 Settings = new Mongo.Collection('settings');
 
 Settings.attachSchema(
@@ -41,6 +48,10 @@ Settings.attachSchema(
       type: String,
       optional: false,
     },
+    spinnerName: {
+      type: String,
+      optional: true,
+    },
     hideLogo: {
       type: Boolean,
       optional: true,
@@ -57,6 +68,10 @@ Settings.attachSchema(
       type: String,
       optional: true,
     },
+    automaticLinkedUrlSchemes: {
+      type: String,
+      optional: true,
+    },
     customTopLeftCornerLogoImageUrl: {
       type: String,
       optional: true,
@@ -66,6 +81,18 @@ Settings.attachSchema(
       optional: true,
     },
     customTopLeftCornerLogoHeight: {
+      type: String,
+      optional: true,
+    },
+    oidcBtnText: {
+      type: String,
+      optional: true,
+    },
+    mailDomainName: {
+      type: String,
+      optional: true,
+    },
+    legalNotice: {
       type: String,
       optional: true,
     },
@@ -144,29 +171,38 @@ if (Meteor.isServer) {
       };
       Settings.insert(defaultSetting);
     }
-    const newSetting = Settings.findOne();
-    if (!process.env.MAIL_URL && newSetting.mailUrl())
-      process.env.MAIL_URL = newSetting.mailUrl();
-    Accounts.emailTemplates.from = process.env.MAIL_FROM
-      ? process.env.MAIL_FROM
-      : newSetting.mailServer.from;
-  });
-  Settings.after.update((userId, doc, fieldNames) => {
-    // assign new values to mail-from & MAIL_URL in environment
-    if (_.contains(fieldNames, 'mailServer') && doc.mailServer.host) {
-      const protocol = doc.mailServer.enableTLS ? 'smtps://' : 'smtp://';
-      if (!doc.mailServer.username && !doc.mailServer.password) {
-        process.env.MAIL_URL = `${protocol}${doc.mailServer.host}:${doc.mailServer.port}/`;
-      } else {
-        process.env.MAIL_URL = `${protocol}${
-          doc.mailServer.username
-        }:${encodeURIComponent(doc.mailServer.password)}@${
-          doc.mailServer.host
-        }:${doc.mailServer.port}/`;
-      }
-      Accounts.emailTemplates.from = doc.mailServer.from;
+    if (isSandstorm) {
+      // At Sandstorm, Admin Panel has SMTP settings
+      const newSetting = Settings.findOne();
+      if (!process.env.MAIL_URL && newSetting.mailUrl())
+        process.env.MAIL_URL = newSetting.mailUrl();
+      Accounts.emailTemplates.from = process.env.MAIL_FROM
+        ? process.env.MAIL_FROM
+        : newSetting.mailServer.from;
+    } else {
+      // Not running on Sandstorm, so using environment variables
+      Accounts.emailTemplates.from = process.env.MAIL_FROM;
     }
   });
+  if (isSandstorm) {
+    // At Sandstorm Wekan Admin Panel, save SMTP settings.
+    Settings.after.update((userId, doc, fieldNames) => {
+      // assign new values to mail-from & MAIL_URL in environment
+      if (_.contains(fieldNames, 'mailServer') && doc.mailServer.host) {
+        const protocol = doc.mailServer.enableTLS ? 'smtps://' : 'smtp://';
+        if (!doc.mailServer.username && !doc.mailServer.password) {
+          process.env.MAIL_URL = `${protocol}${doc.mailServer.host}:${doc.mailServer.port}/`;
+        } else {
+          process.env.MAIL_URL = `${protocol}${
+            doc.mailServer.username
+          }:${encodeURIComponent(doc.mailServer.password)}@${
+            doc.mailServer.host
+          }:${doc.mailServer.port}/`;
+        }
+        Accounts.emailTemplates.from = doc.mailServer.from;
+      }
+    });
+  }
 
   function getRandomNum(min, max) {
     const range = max - min;
@@ -189,15 +225,43 @@ if (Meteor.isServer) {
     const icode = InvitationCodes.findOne(_id);
     const author = Users.findOne(Meteor.userId());
     try {
+      const fullName = Users.findOne(icode.authorId)
+                  && Users.findOne(icode.authorId).profile
+                  && Users.findOne(icode.authorId).profile !== undefined
+                  && Users.findOne(icode.authorId).profile.fullname ?  Users.findOne(icode.authorId).profile.fullname : "";
+
       const params = {
         email: icode.email,
-        inviter: Users.findOne(icode.authorId).username,
+        inviter: fullName != "" ? fullName + " (" + Users.findOne(icode.authorId).username + " )" : Users.findOne(icode.authorId).username,
         user: icode.email.split('@')[0],
         icode: icode.code,
         url: FlowRouter.url('sign-up'),
       };
       const lang = author.getLanguage();
-
+/*
+      if (process.env.MAIL_SERVICE !== '') {
+        let transporter = nodemailer.createTransport({
+          service: process.env.MAIL_SERVICE,
+          auth: {
+            user: process.env.MAIL_SERVICE_USER,
+            pass: process.env.MAIL_SERVICE_PASSWORD
+          },
+        })
+        let info = transporter.sendMail({
+          to: icode.email,
+          from: Accounts.emailTemplates.from,
+          subject: TAPi18n.__('email-invite-register-subject', params, lang),
+          text: TAPi18n.__('email-invite-register-text', params, lang),
+        })
+      } else {
+        Email.send({
+          to: icode.email,
+          from: Accounts.emailTemplates.from,
+          subject: TAPi18n.__('email-invite-register-subject', params, lang),
+          text: TAPi18n.__('email-invite-register-text', params, lang),
+        });
+      }
+*/
       Email.send({
         to: icode.email,
         from: Accounts.emailTemplates.from,
@@ -208,6 +272,20 @@ if (Meteor.isServer) {
       InvitationCodes.remove(_id);
       throw new Meteor.Error('email-fail', e.message);
     }
+  }
+
+  function isNonAdminAllowedToSendMail(currentUser){
+    const currSett = Settings.findOne({});
+    let isAllowed = false;
+    if(currSett && currSett != undefined && currSett.disableRegistration && currSett.mailDomainName !== undefined && currSett.mailDomainName != ""){
+      for(let i = 0; i < currentUser.emails.length; i++) {
+        if(currentUser.emails[i].address.endsWith(currSett.mailDomainName)){
+          isAllowed = true;
+          break;
+        }
+      }
+    }
+    return isAllowed;
   }
 
   function isLdapEnabled() {
@@ -235,11 +313,13 @@ if (Meteor.isServer) {
 
   Meteor.methods({
     sendInvitation(emails, boards) {
+      let rc = 0;
       check(emails, [String]);
       check(boards, [String]);
 
       const user = Users.findOne(Meteor.userId());
-      if (!user.isAdmin) {
+      if (!user.isAdmin && !isNonAdminAllowedToSendMail(user)) {
+        rc = -1;
         throw new Meteor.Error('not-allowed');
       }
       emails.forEach(email => {
@@ -247,6 +327,7 @@ if (Meteor.isServer) {
           // Checks if the email is already link to an account.
           const userExist = Users.findOne({ email });
           if (userExist) {
+            rc = -1;
             throw new Meteor.Error(
               'user-exist',
               `The user with the email ${email} has already an account.`,
@@ -273,6 +354,7 @@ if (Meteor.isServer) {
                 if (!err && _id) {
                   sendInvitationEmail(_id);
                 } else {
+                  rc = -1;
                   throw new Meteor.Error(
                     'invitation-generated-fail',
                     err.message,
@@ -283,6 +365,7 @@ if (Meteor.isServer) {
           }
         }
       });
+      return rc;
     },
 
     sendSMTPTestEmail() {
@@ -296,6 +379,30 @@ if (Meteor.isServer) {
       this.unblock();
       const lang = user.getLanguage();
       try {
+/*
+        if (process.env.MAIL_SERVICE !== '') {
+          let transporter = nodemailer.createTransport({
+            service: process.env.MAIL_SERVICE,
+            auth: {
+              user: process.env.MAIL_SERVICE_USER,
+              pass: process.env.MAIL_SERVICE_PASSWORD
+            },
+          })
+          let info = transporter.sendMail({
+            to: user.emails[0].address,
+            from: Accounts.emailTemplates.from,
+            subject: TAPi18n.__('email-smtp-test-subject', { lng: lang }),
+            text: TAPi18n.__('email-smtp-test-text', { lng: lang }),
+          })
+        } else {
+          Email.send({
+            to: user.emails[0].address,
+            from: Accounts.emailTemplates.from,
+            subject: TAPi18n.__('email-smtp-test-subject', { lng: lang }),
+            text: TAPi18n.__('email-smtp-test-text', { lng: lang }),
+          });
+        }
+*/
         Email.send({
           to: user.emails[0].address,
           from: Accounts.emailTemplates.from,

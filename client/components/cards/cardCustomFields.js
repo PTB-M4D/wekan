@@ -1,6 +1,9 @@
+import { DatePicker } from '/client/lib/datepicker';
+import Cards from '/models/cards';
+
 Template.cardCustomFieldsPopup.helpers({
   hasCustomField() {
-    const card = Cards.findOne(Session.get('currentCard'));
+    const card = Utils.getCurrentCard();
     const customFieldId = this._id;
     return card.customFieldIndex(customFieldId) > -1;
   },
@@ -8,7 +11,7 @@ Template.cardCustomFieldsPopup.helpers({
 
 Template.cardCustomFieldsPopup.events({
   'click .js-select-field'(event) {
-    const card = Cards.findOne(Session.get('currentCard'));
+    const card = Utils.getCurrentCard();
     const customFieldId = this._id;
     card.toggleCustomField(customFieldId);
     event.preventDefault();
@@ -28,7 +31,7 @@ const CardCustomField = BlazeComponent.extendComponent({
 
   onCreated() {
     const self = this;
-    self.card = Cards.findOne(Session.get('currentCard'));
+    self.card = Utils.getCurrentCard();
     self.customFieldId = this.data()._id;
   },
 
@@ -146,6 +149,10 @@ CardCustomField.register('cardCustomField');
     });
   }
 
+  showWeek() {
+    return this.date.get().week().toString();
+  }
+
   showDate() {
     // this will start working once mquandalle:moment
     // is updated to at least moment.js 2.10.5
@@ -187,7 +194,7 @@ CardCustomField.register('cardCustomField');
   onCreated() {
     super.onCreated();
     const self = this;
-    self.card = Cards.findOne(Session.get('currentCard'));
+    self.card = Utils.getCurrentCard();
     self.customFieldId = this.data()._id;
     this.data().value && this.date.set(moment(this.data().value));
   }
@@ -234,3 +241,91 @@ CardCustomField.register('cardCustomField');
     ];
   }
 }.register('cardCustomField-dropdown'));
+
+// cardCustomField-stringtemplate
+(class extends CardCustomField {
+  onCreated() {
+    super.onCreated();
+
+    this.stringtemplateFormat = this.data().definition.settings.stringtemplateFormat;
+    this.stringtemplateSeparator = this.data().definition.settings.stringtemplateSeparator;
+
+    this.stringtemplateItems = new ReactiveVar(this.data().value ?? []);
+  }
+
+  formattedValue() {
+    return (this.data().value ?? [])
+      .filter(value => !!value.trim())
+      .map(value => this.stringtemplateFormat.replace(/%\{value\}/gi, value))
+      .join(this.stringtemplateSeparator ?? '');
+  }
+
+  getItems() {
+    return Array.from(this.findAll('input'))
+      .map(input => input.value)
+      .filter(value => !!value.trim());
+  }
+
+  events() {
+    return [
+      {
+        'submit .js-card-customfield-stringtemplate'(event) {
+          event.preventDefault();
+          const items = this.stringtemplateItems.get();
+          this.card.setCustomField(this.customFieldId, items);
+        },
+
+        'keydown .js-card-customfield-stringtemplate-item'(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+
+            if (event.target.value.trim() || event.metaKey || event.ctrlKey) {
+              const inputLast = this.find('input.last');
+
+              let items = this.getItems();
+
+              if (event.target === inputLast) {
+                inputLast.value = '';
+              } else if (event.target.nextSibling === inputLast) {
+                inputLast.focus();
+              } else {
+                event.target.blur();
+
+                const idx = Array.from(this.findAll('input')).indexOf(
+                  event.target,
+                );
+                items.splice(idx + 1, 0, '');
+
+                Tracker.afterFlush(() => {
+                  const element = this.findAll('input')[idx + 1];
+                  element.focus();
+                  element.value = '';
+                });
+              }
+
+              this.stringtemplateItems.set(items);
+            }
+            if (event.metaKey || event.ctrlKey) {
+              this.find('button[type=submit]').click();
+            }
+          }
+        },
+
+        'blur .js-card-customfield-stringtemplate-item'(event) {
+          if (
+            !event.target.value.trim() ||
+            event.target === this.find('input.last')
+          ) {
+            const items = this.getItems();
+            this.stringtemplateItems.set(items);
+            this.find('input.last').value = '';
+          }
+        },
+
+        'click .js-close-inlined-form'(event) {
+          this.stringtemplateItems.set(this.data().value ?? []);
+        },
+      },
+    ];
+  }
+}.register('cardCustomField-stringtemplate'));

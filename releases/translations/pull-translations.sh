@@ -27,6 +27,9 @@ tx pull -f -l zh_CN
 echo "Chinese (Hong Kong):"
 tx pull -f -l zh_HK
 
+echo "Chinese Simplified (zh-Hans):"
+tx pull -f -l zh_Hans
+
 echo "Chinese (Taiwan):"
 tx pull -f -l zh_TW
 
@@ -45,6 +48,15 @@ tx pull -f -l nl
 echo "Esperanto:"
 tx pull -f -l eo
 
+echo "Estonian (Estonia):"
+tx pull -f -l et_EE
+
+echo "English (Germany):"
+tx pull -f -l en_DE
+
+echo "English (Italy):"
+tx pull -f -l en_IT
+
 echo "English (United Kingdom):"
 tx pull -f -l en_GB
 
@@ -53,6 +65,9 @@ tx pull -f -l fi
 
 echo "French:"
 tx pull -f -l fr
+
+echo "French (Switzerland):"
+tx pull -f -l fr_CH
 
 echo "Galician:"
 tx pull -f -l gl
@@ -63,8 +78,20 @@ tx pull -f -l ka
 echo "German:"
 tx pull -f -l de
 
-echo "Greek:"
-tx pull -f -l el
+echo "German (Austria):"
+tx pull -f -l de_AT
+
+echo "German (Switzerland) => Deutsch (Schweiz):"
+tx pull -f -l de_CH
+
+#echo "Greek:"
+#tx pull -f -l el
+
+echo "Greek (Greece):"
+tx pull -f -l el_GR
+
+echo "Gurajati (India):"
+tx pull -f -l gu_IN
 
 echo "Hebrew:"
 tx pull -f -l he
@@ -74,6 +101,12 @@ tx pull -f -l hu_HU
 
 echo "Hindi:"
 tx pull -f -l hi
+
+echo "Hindi (India)":
+tx pull -f -l hi_IN
+
+echo "Khmer (km)":
+tx pull -f -l km
 
 echo "Lithuanian:"
 tx pull -f -l lt
@@ -107,6 +140,9 @@ tx pull -f -l lv_LV
 
 echo "Macedonian:"
 tx pull -f -l mk
+
+echo "Malay (Malaysia) (ms_MY):"
+tx pull -f -l ms_MY
 
 echo "Mongolian (Mongolia):"
 tx pull -f -l mn_MN
@@ -142,6 +178,9 @@ tx pull -f -l ro
 echo "Russian:"
 tx pull -f -l ru
 
+echo "Russian (Ukraine):"
+tx pull -f -l ru_UA
+
 echo "Spanish:"
 tx pull -f -l es
 
@@ -150,6 +189,9 @@ tx pull -f -l es_AR
 
 echo "Spanish (Chile):"
 tx pull -f -l es_CL
+
+echo "Spanish (Latin America)":
+tx pull -f -l es_419
 
 echo "Spanish (Mexico)":
 tx pull -f -l es_MX
@@ -186,6 +228,9 @@ tx pull -f -l tr
 
 echo "Ukrainian:"
 tx pull -f -l uk
+
+echo "Ukrainian (Ukraine):"
+tx pull -f -l uk_UA
 
 echo "Vietnamese:"
 tx pull -f -l vi

@@ -1,122 +1,4 @@
-// Helper function to replace HH with H for 24 hours format, because H allows also single-digit hours
-function adjustedTimeFormat() {
-  return moment
-    .localeData()
-    .longDateFormat('LT')
-    .replace(/HH/i, 'H');
-}
-
-// Edit received, start, due & end dates
-BlazeComponent.extendComponent({
-  template() {
-    return 'editCardDate';
-  },
-
-  onCreated() {
-    this.error = new ReactiveVar('');
-    this.card = this.data();
-    this.date = new ReactiveVar(moment.invalid());
-  },
-
-  onRendered() {
-    const $picker = this.$('.js-datepicker')
-      .datepicker({
-        todayHighlight: true,
-        todayBtn: 'linked',
-        language: TAPi18n.getLanguage(),
-      })
-      .on(
-        'changeDate',
-        function(evt) {
-          this.find('#date').value = moment(evt.date).format('L');
-          this.error.set('');
-          this.find('#time').focus();
-        }.bind(this),
-      );
-
-    if (this.date.get().isValid()) {
-      $picker.datepicker('update', this.date.get().toDate());
-    }
-  },
-
-  showDate() {
-    if (this.date.get().isValid()) return this.date.get().format('L');
-    return '';
-  },
-  showTime() {
-    if (this.date.get().isValid()) return this.date.get().format('LT');
-    return '';
-  },
-  dateFormat() {
-    return moment.localeData().longDateFormat('L');
-  },
-  timeFormat() {
-    return moment.localeData().longDateFormat('LT');
-  },
-
-  events() {
-    return [
-      {
-        'keyup .js-date-field'() {
-          // parse for localized date format in strict mode
-          const dateMoment = moment(this.find('#date').value, 'L', true);
-          if (dateMoment.isValid()) {
-            this.error.set('');
-            this.$('.js-datepicker').datepicker('update', dateMoment.toDate());
-          }
-        },
-        'keyup .js-time-field'() {
-          // parse for localized time format in strict mode
-          const dateMoment = moment(
-            this.find('#time').value,
-            adjustedTimeFormat(),
-            true,
-          );
-          if (dateMoment.isValid()) {
-            this.error.set('');
-          }
-        },
-        'submit .edit-date'(evt) {
-          evt.preventDefault();
-
-          // if no time was given, init with 12:00
-          const time =
-            evt.target.time.value ||
-            moment(new Date().setHours(12, 0, 0)).format('LT');
-          const newTime = moment(time, adjustedTimeFormat(), true);
-          const newDate = moment(evt.target.date.value, 'L', true);
-          const dateString = `${evt.target.date.value} ${time}`;
-          const newCompleteDate = moment(
-            dateString,
-            'L ' + adjustedTimeFormat(),
-            true,
-          );
-          if (!newTime.isValid()) {
-            this.error.set('invalid-time');
-            evt.target.time.focus();
-          }
-          if (!newDate.isValid()) {
-            this.error.set('invalid-date');
-            evt.target.date.focus();
-          }
-          if (newCompleteDate.isValid()) {
-            this._storeDate(newCompleteDate.toDate());
-            Popup.close();
-          } else {
-            if (!this.error) {
-              this.error.set('invalid');
-            }
-          }
-        },
-        'click .js-delete-date'(evt) {
-          evt.preventDefault();
-          this._deleteDate();
-          Popup.close();
-        },
-      },
-    ];
-  },
-});
+import { DatePicker } from '/client/lib/datepicker';
 
 Template.dateBadge.helpers({
   canModifyCard() {
@@ -142,7 +24,7 @@ Template.dateBadge.helpers({
   }
 
   _deleteDate() {
-    this.card.setReceived(null);
+    this.card.unsetReceived();
   }
 }.register('editCardReceivedDatePopup'));
 
@@ -168,7 +50,7 @@ Template.dateBadge.helpers({
   }
 
   _deleteDate() {
-    this.card.setStart(null);
+    this.card.unsetStart();
   }
 }.register('editCardStartDatePopup'));
 
@@ -191,7 +73,7 @@ Template.dateBadge.helpers({
   }
 
   _deleteDate() {
-    this.card.setDue(null);
+    this.card.unsetDue();
   }
 }.register('editCardDueDatePopup'));
 
@@ -214,7 +96,7 @@ Template.dateBadge.helpers({
   }
 
   _deleteDate() {
-    this.card.setEnd(null);
+    this.card.unsetEnd();
   }
 }.register('editCardEndDatePopup'));
 
@@ -231,6 +113,10 @@ const CardDate = BlazeComponent.extendComponent({
     window.setInterval(() => {
       self.now.set(moment());
     }, 60000);
+  },
+
+  showWeek() {
+    return this.date.get().week().toString();
   },
 
   showDate() {
@@ -305,7 +191,7 @@ class CardStartDate extends CardDate {
     // if dueAt or endAt exist & are > startAt, startAt doesn't need to be flagged
     if ((endAt && theDate.isAfter(endAt)) || (dueAt && theDate.isAfter(dueAt)))
       classes += 'long-overdue';
-    else if (theDate.isBefore(now, 'minute')) classes += 'almost-due';
+    else if (theDate.isAfter(now)) classes += '';
     else classes += 'current';
     return classes;
   }
@@ -402,12 +288,25 @@ class CardCustomFieldDate extends CardDate {
     });
   }
 
-  classes() {
-    return 'customfield-date';
+  showWeek() {
+    return this.date.get().week().toString();
+  }
+
+  showDate() {
+    // this will start working once mquandalle:moment
+    // is updated to at least moment.js 2.10.5
+    // until then, the date is displayed in the "L" format
+    return this.date.get().calendar(null, {
+      sameElse: 'llll',
+    });
   }
 
   showTitle() {
-    return '';
+    return `${this.date.get().format('LLLL')}`;
+  }
+
+  classes() {
+    return 'customfield-date';
   }
 
   events() {
@@ -472,3 +371,30 @@ class VoteEndDate extends CardDate {
   }
 }
 VoteEndDate.register('voteEndDate');
+
+class PokerEndDate extends CardDate {
+  onCreated() {
+    super.onCreated();
+    const self = this;
+    self.autorun(() => {
+      self.date.set(moment(self.data().getPokerEnd()));
+    });
+  }
+  classes() {
+    const classes = 'end-date' + ' ';
+    return classes;
+  }
+  showDate() {
+    return this.date.get().format('l LT');
+  }
+  showTitle() {
+    return `${TAPi18n.__('card-end-on')} ${this.date.get().format('LLLL')}`;
+  }
+
+  events() {
+    return super.events().concat({
+      'click .js-edit-date': Popup.open('editPokerEndDate'),
+    });
+  }
+}
+PokerEndDate.register('pokerEndDate');

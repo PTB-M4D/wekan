@@ -1,3 +1,5 @@
+import { ALLOWED_COLORS } from '/config/const';
+
 Swimlanes = new Mongo.Collection('swimlanes');
 
 /**
@@ -68,32 +70,7 @@ Swimlanes.attachSchema(
       type: String,
       optional: true,
       // silver is the default, so it is left out
-      allowedValues: [
-        'white',
-        'green',
-        'yellow',
-        'orange',
-        'red',
-        'purple',
-        'blue',
-        'sky',
-        'lime',
-        'pink',
-        'black',
-        'peachpuff',
-        'crimson',
-        'plum',
-        'darkgreen',
-        'slateblue',
-        'magenta',
-        'gold',
-        'navy',
-        'gray',
-        'saddlebrown',
-        'paleturquoise',
-        'mistyrose',
-        'indigo',
-      ],
+      allowedValues: ALLOWED_COLORS,
     },
     updatedAt: {
       /**
@@ -170,6 +147,45 @@ Swimlanes.helpers({
     });
   },
 
+  move(toBoardId) {
+    this.lists().forEach(list => {
+      const toList = Lists.findOne({
+        boardId: toBoardId,
+        title: list.title,
+        archived: false,
+      });
+
+      let toListId;
+      if (toList) {
+        toListId = toList._id;
+      } else {
+        toListId = Lists.insert({
+          title: list.title,
+          boardId: toBoardId,
+          type: list.type,
+          archived: false,
+          wipLimit: list.wipLimit,
+        });
+      }
+
+      Cards.find({
+        listId: list._id,
+        swimlaneId: this._id,
+      }).forEach(card => {
+        card.move(toBoardId, this._id, toListId);
+      });
+    });
+
+    Swimlanes.update(this._id, {
+      $set: {
+        boardId: toBoardId,
+      },
+    });
+
+    // make sure there is a default swimlane
+    this.board().getDefaultSwimline();
+  },
+
   cards() {
     return Cards.find(
       Filter.mongoSelector({
@@ -204,7 +220,7 @@ Swimlanes.helpers({
       {
         boardId: this.boardId,
         swimlaneId: { $in: [this._id, ''] },
-        archived: false,
+        //archived: false,
       },
       { sort: ['sort'] },
     );
@@ -290,6 +306,17 @@ Swimlanes.mutations({
   },
 });
 
+Swimlanes.userArchivedSwimlanes = userId => {
+  return Swimlanes.find({
+    boardId: { $in: Boards.userBoardIds(userId, null) },
+    archived: true,
+  })
+};
+
+Swimlanes.userArchivedSwimlaneIds = () => {
+  return Swimlanes.userArchivedSwimlanes().map(swim => { return swim._id; });
+};
+
 Swimlanes.archivedSwimlanes = () => {
   return Swimlanes.find({ archived: true });
 };
@@ -372,8 +399,8 @@ if (Meteor.isServer) {
    */
   JsonRoutes.add('GET', '/api/boards/:boardId/swimlanes', function(req, res) {
     try {
+      Authentication.checkUserId(req.userId);
       const paramBoardId = req.params.boardId;
-      Authentication.checkBoardAccess(req.userId, paramBoardId);
 
       JsonRoutes.sendResult(res, {
         code: 200,
@@ -408,9 +435,9 @@ if (Meteor.isServer) {
     res,
   ) {
     try {
+      Authentication.checkUserId(req.userId);
       const paramBoardId = req.params.boardId;
       const paramSwimlaneId = req.params.swimlaneId;
-      Authentication.checkBoardAccess(req.userId, paramBoardId);
       JsonRoutes.sendResult(res, {
         code: 200,
         data: Swimlanes.findOne({

@@ -2,21 +2,17 @@ template(name="minicard")
   .minicard(
     class="{{#if isLinkedCard}}linked-card{{/if}}"
     class="{{#if isLinkedBoard}}linked-board{{/if}}"
-    class="minicard-{{colorClass}}")
-    if isMiniScreen
+    class="{{#if colorClass}}minicard-{{colorClass}}{{/if}}")
+    if isMiniScreenOrShowDesktopDragHandles
       .handle
         .fa.fa-arrows
-    unless isMiniScreen
-      if showDesktopDragHandles
-        .handle
-          .fa.fa-arrows
     if cover
       .minicard-cover(style="background-image: url('{{cover.url}}');")
     if labels
-      .minicard-labels
+      .minicard-labels(class="{{#if hiddenMinicardLabelText}}minicard-labels-no-text{{/if}}")
         each labels
           unless hiddenMinicardLabelText
-            span.card-label(class="card-label-{{color}}" title=name)
+            span.js-card-label.card-label(class="card-label-{{color}}" title=name)
               +viewer
                 = name
           if hiddenMinicardLabelText
@@ -37,6 +33,9 @@ template(name="minicard")
       if getArchived
         span.linked-icon.linked-archived.fa.fa-archive
       +viewer
+        if currentBoard.allowsCardNumber
+          span.card-number
+            | ##{getCardNumber}
         = getTitle
       if $eq 'subtext-with-full-path' currentBoard.presentParentTask
         .parent-subtext
@@ -82,19 +81,28 @@ template(name="minicard")
                     +minicardCustomFieldDate
                 else if $eq definition.type "checkbox"
                   .materialCheckBox(class="{{#if value }}is-checked{{/if}}")
+                else if $eq definition.type "stringtemplate"
+                  +viewer
+                    = formattedStringtemplateCustomFieldValue(definition)
                 else
                   +viewer
                     = trueValue
 
-    if getAssignees
-      .minicard-assignees.js-minicard-assignees
-        each getAssignees
-          +userAvatar(userId=this)
+    if showAssignee
+      if getAssignees
+        .minicard-assignees.js-minicard-assignees
+          each getAssignees
+            +userAvatar(userId=this)
 
-    if getMembers
-      .minicard-members.js-minicard-members
-        each getMembers
-          +userAvatar(userId=this)
+    if showMembers
+      if getMembers
+        .minicard-members.js-minicard-members
+          each getMembers
+            +userAvatar(userId=this)
+
+    if showCreator
+      .minicard-creator
+        +userAvatar(userId=this.userId noRemove=true)
 
     .badges
       unless currentUser.isNoComments
@@ -114,6 +122,11 @@ template(name="minicard")
           span.badge-text {{ voteCountPositive }}
           span.badge-icon.fa.fa-thumbs-down(class="{{#if $eq voteState false}}text-red{{/if}}")
           span.badge-text {{ voteCountNegative }}
+      if getPokerQuestion
+        .badge.badge-state-image-only(title=getPokerQuestion)
+          span.badge-icon.fa.fa-check(class="{{#if pokerState}}text-green{{/if}}")
+          if expiredPoker
+            span.badge-text {{ getPokerEstimation }}
       if attachments.count
         .badge
           span.badge-icon.fa.fa-paperclip
@@ -122,3 +135,17 @@ template(name="minicard")
         .badge(class="{{#if checklistFinished}}is-finished{{/if}}")
           span.badge-icon.fa.fa-check-square-o
           span.badge-text.check-list-text {{checklistFinishedCount}}/{{checklistItemCount}}
+      if allSubtasks.count
+        .badge
+          span.badge-icon.fa.fa-sitemap
+          span.badge-text.check-list-text {{subtasksFinishedCount}}/{{allSubtasksCount}}
+          //{{subtasksFinishedCount}}/{{subtasksCount}} does not work because when a subtaks is archived, the count goes down
+      if currentBoard.allowsCardSortingByNumber
+        .badge
+          span.badge-icon.fa.fa-sort
+          span.badge-text.check-list-sort {{ sort }}
+
+template(name="editCardSortOrderPopup")
+  input.js-edit-card-sort-popup(type='text' autofocus value=sort dir="auto")
+  .edit-controls.clearfix
+    button.primary.confirm.js-submit-edit-card-sort-popup(type="submit") {{_ 'save'}}

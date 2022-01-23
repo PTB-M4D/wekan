@@ -1,7 +1,9 @@
 template(name="boardHeaderBar")
   h1.header-board-menu
     with currentBoard
-      a(class="{{#if currentUser.isBoardAdmin}}js-edit-board-title{{else}}is-disabled{{/if}}")
+      if $eq title 'Templates'
+        | {{_ 'templates'}}
+      else
         +viewer
           = title
 
@@ -9,6 +11,10 @@ template(name="boardHeaderBar")
     unless isMiniScreen
       if currentBoard
         if currentUser
+          with currentBoard
+            a.board-header-btn(class="{{#if currentUser.isBoardAdmin}}js-edit-board-title{{else}}is-disabled{{/if}}" title="{{_ 'edit'}}" value=title)
+              i.fa.fa-pencil-square-o
+
           a.board-header-btn.js-star-board(class="{{#if isStarred}}is-active{{/if}}"
             title="{{#if isStarred}}{{_ 'click-to-unstar'}}{{else}}{{_ 'click-to-star'}}{{/if}} {{_ 'starred-boards-description'}}")
             i.fa(class="fa-star{{#unless isStarred}}-o{{/unless}}")
@@ -31,9 +37,12 @@ template(name="boardHeaderBar")
             if $eq watchLevel "muted"
               i.fa.fa-bell-slash
             span {{_ watchLevel}}
-          a.board-header-btn.js-sort-cards(title="{{_ 'sort-cards'}}")
+          a.board-header-btn(title="{{_ 'sort-cards'}}" class="{{#if isSortActive }}emphasis{{else}} js-sort-cards {{/if}}")
             i.fa.fa-sort
-            | {{_ 'sort-cards'}} {{sortCardsBy.get}}
+            span {{#if isSortActive }}{{_ 'Sort is on'}}{{else}}{{_ 'sort-cards'}}{{/if}}
+            if isSortActive
+              a.board-header-btn-close.js-sort-reset(title="Remove Sort")
+                i.fa.fa-times-thin
 
         else
           a.board-header-btn.js-log-in(
@@ -45,6 +54,10 @@ template(name="boardHeaderBar")
     if currentBoard
       if isMiniScreen
         if currentUser
+          with currentBoard
+            a.board-header-btn(class="{{#if currentUser.isBoardAdmin}}js-edit-board-title{{else}}is-disabled{{/if}}" title="{{_ 'edit'}}" value=title)
+              i.fa.fa-pencil-square-o
+
           a.board-header-btn.js-star-board(class="{{#if isStarred}}is-active{{/if}}"
             title="{{#if isStarred}}{{_ 'click-to-unstar'}}{{else}}{{_ 'click-to-star'}}{{/if}} {{_ 'starred-boards-description'}}")
             i.fa(class="fa-star{{#unless isStarred}}-o{{/unless}}")
@@ -67,6 +80,12 @@ template(name="boardHeaderBar")
             if $eq watchLevel "muted"
               i.fa.fa-bell-slash
             span {{_ watchLevel}}
+          a.board-header-btn(title="{{_ 'sort-cards'}}" class="{{#if isSortActive }}emphasis{{else}} js-sort-cards {{/if}}")
+            i.fa.fa-sort
+            span {{#if isSortActive }}{{_ 'Sort is on'}}{{else}}{{_ 'sort-cards'}}{{/if}}
+            if isSortActive
+              a.board-header-btn-close.js-sort-reset(title="Remove Sort")
+                i.fa.fa-times-thin
 
         else
           a.board-header-btn.js-log-in(
@@ -121,7 +140,7 @@ template(name="boardHeaderBar")
               i.fa.fa-times-thin
 
       .separator
-      a.board-header-btn.js-toggle-sidebar
+      a.board-header-btn.js-toggle-sidebar(title="{{_ 'sidebar-open'}} {{_ 'or'}} {{_ 'sidebar-close'}}")
         i.fa.fa-navicon
 
 template(name="boardVisibilityList")
@@ -134,14 +153,15 @@ template(name="boardVisibilityList")
           if visibilityCheck
             i.fa.fa-check
           span.sub-name {{_ 'private-desc'}}
-    li
-      with "public"
-        a.js-select-visibility
-          i.fa.fa-globe.colorful
-          | {{_ 'public'}}
-          if visibilityCheck
-            i.fa.fa-check
-          span.sub-name {{_ 'public-desc'}}
+    if notAllowPrivateVisibilityOnly
+      li
+        with "public"
+          a.js-select-visibility
+            i.fa.fa-globe.colorful
+            | {{_ 'public'}}
+            if visibilityCheck
+              i.fa.fa-check
+            span.sub-name {{_ 'public-desc'}}
 
 template(name="boardChangeVisibilityPopup")
   +boardVisibilityList
@@ -215,6 +235,9 @@ template(name="createBoard")
           = " "
           | {{{_ 'board-private-info'}}}
         a.js-change-visibility {{_ 'change'}}.
+    a.flex.js-toggle-add-template-container
+      .materialCheckBox#add-template-container
+      span {{_ 'add-template-container'}}
     input.primary.wide(type="submit" value="{{_ 'create'}}")
     span.quiet
       | {{_ 'or'}}

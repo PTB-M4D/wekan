@@ -1,4 +1,5 @@
-import sanitizeXss from 'xss';
+import DOMPurify from 'dompurify';
+
 var Markdown = require('markdown-it')({
   html: true,
   linkify: true,
@@ -6,35 +7,37 @@ var Markdown = require('markdown-it')({
   breaks: true,
 });
 
-// Additional  safeAttrValue function to allow for other specific protocols
-// See https://github.com/leizongmin/js-xss/issues/52#issuecomment-241354114
-function mySafeAttrValue(tag, name, value, cssFilter) {
-  // only when the tag is 'a' and attribute is 'href'
-  // then use your custom function
-  if (tag === 'a' && name === 'href') {
-    // only filter the value if starts with 'cbthunderlink:' or 'aodroplink'
-    if (/^thunderlink:/ig.test(value) ||
-        /^cbthunderlink:/ig.test(value) ||
-        /^aodroplink:/ig.test(value) ||
-        /^onenote:/ig.test(value) ||
-        /^file:/ig.test(value) ||
-        /^abasurl:/ig.test(value) ||
-        /^conisio:/ig.test(value) ||
-        /^mailspring:/ig.test(value)) {
-      return value;
-    }
-    else {
-      // use the default safeAttrValue function to process all non cbthunderlinks
-      return sanitizeXss.safeAttrValue(tag, name, value, cssFilter);
-    }
-  } else {
-    // use the default safeAttrValue function to process it
-    return sanitizeXss.safeAttrValue(tag, name, value, cssFilter);
-  }
-};
+import markdownItMermaid from "@wekanteam/markdown-it-mermaid";
+
+// Static URL Scheme Listing
+var urlschemes = [
+  "aodroplink",
+  "thunderlink",
+  "cbthunderlink",
+  "onenote",
+  "file",
+  "abasurl",
+  "conisio",
+  "mailspring"
+];
+
+
+
+// Better would be a field in the admin backend to set this dynamically
+// instead of putting all known or wanted url schemes here hard into code
+// but i was not able to access those settings
+// var urlschemes = currentSetting.automaticLinkedUrlSchemes.split('\n');
+
+
+
+// put all url schemes into the linkify configuration to automatically make it clickable
+for(var i=0; i<urlschemes.length;i++){
+  Markdown.linkify.add(urlschemes[i]+":",'http:');
+}
 
 var emoji = require('markdown-it-emoji');
 Markdown.use(emoji);
+Markdown.use(markdownItMermaid);
 
 if (Package.ui) {
   const Template = Package.templating.Template;
@@ -49,6 +52,6 @@ if (Package.ui) {
       text = Blaze._toText(self.templateContentBlock, HTML.TEXTMODE.STRING);
     }
 
-    return HTML.Raw(sanitizeXss(Markdown.render(text), { safeAttrValue: mySafeAttrValue }));
+    return HTML.Raw(DOMPurify.sanitize(Markdown.render(text), {ALLOW_UNKNOWN_PROTOCOLS: true}));
   }));
 }

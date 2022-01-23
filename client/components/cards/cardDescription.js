@@ -3,6 +3,7 @@ const descriptionFormIsOpen = new ReactiveVar(false);
 BlazeComponent.extendComponent({
   onDestroyed() {
     descriptionFormIsOpen.set(false);
+    $('.note-popover').hide();
   },
 
   descriptionFormIsOpen() {
@@ -24,7 +25,10 @@ BlazeComponent.extendComponent({
         // Pressing Ctrl+Enter should submit the form
         'keydown form textarea'(evt) {
           if (evt.keyCode === 13 && (evt.metaKey || evt.ctrlKey)) {
-            this.find('button[type=submit]').click();
+            const submitButton = this.find('button[type=submit]');
+            if (submitButton) {
+              submitButton.click();
+            }
           }
         },
       },
