@@ -1,4 +1,4 @@
-FROM ubuntu:rolling
+FROM ubuntu:20.04
 LABEL maintainer="Bjoern Ludwig <bjoern.ludwig@ptb.de>"
 
 # 2021-09-18:
