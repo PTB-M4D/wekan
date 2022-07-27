@@ -1,5 +1,5 @@
-FROM ubuntu:22.04
-LABEL maintainer="wekan"
+FROM ubuntu:20.04
+LABEL maintainer="Bjoern Ludwig <bjoern.ludwig@ptb.de>"
 
 # 2022-04-25:
 # - gyp does not yet work with Ubuntu 22.04 ubuntu:rolling,

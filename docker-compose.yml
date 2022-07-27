@@ -120,10 +120,11 @@ services:
     #-------------------------------------------------------------------------------------
     # ==== MONGODB AND METEOR VERSION ====
     # a) Quay automatic builds do work work, https://quay.io/wekan/wekan
-    image: quay.io/wekan/wekan
+    # image: quay.io/wekan/wekan
     # b) Using specific version tag:
     # image: quay.io/wekan/wekan:v4.52
     # c) Docker Hub builds do work https://hub.docker.com/r/wekanteam/wekan
+    image: bludoc/wekan
     # image: wekanteam/wekan
     #-------------------------------------------------------------------------------------
     container_name: wekan-app
@@ -139,16 +140,16 @@ services:
     #-------------------------------------------------------------------------------------
     # ==== BUILD wekan-app DOCKER CONTAINER FROM SOURCE, if you uncomment these ====
     # ==== and use commands: docker-compose up -d --build
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
     #-------------------------------------------------------------------------------------
     ports:
       # Docker outsideport:insideport. Do not add anything extra here.
       # For example, if you want to have wekan on port 3001,
       # use 3001:8080 . Do not add any extra address etc here, that way it does not work.
       # remove port mapping if you use nginx reverse proxy, port 8080 is already exposed to wekan-tier network
-      - 80:8080
+      - 8080:8080
     environment:
       #-----------------------------------------------------------------
       # ==== WRITEABLE PATH FOR FILE UPLOADS ====

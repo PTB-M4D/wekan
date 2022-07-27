@@ -2,11 +2,11 @@
 
 # WeKan ® - Open Source kanban
 
+[![CircleCI](https://circleci.com/gh/PTB-M4D/wekan/tree/wekan.svg?style=shield)](https://circleci.com/gh/PTB-M4D/wekan/tree/wekan)
+[![Get your own version badge on microbadger.com](https://images.microbadger.com/badges/version/bludoc/wekan:latest.svg)](https://microbadger.com/images/bludoc/wekan:latest)
+[![Get your own image badge on microbadger.com](https://images.microbadger.com/badges/image/bludoc/wekan:latest.svg)](https://microbadger.com/images/bludoc/wekan:latest)
+
 [![Contributors](https://img.shields.io/github/contributors/wekan/wekan.svg "Contributors")](https://github.com/wekan/wekan/graphs/contributors)
-[![Docker Repository on Quay](https://quay.io/repository/wekan/wekan/status "Docker Repository on Quay")](https://quay.io/repository/wekan/wekan)
-[![Docker Hub container status](https://img.shields.io/docker/build/wekanteam/wekan.svg "Docker Hub container status")](https://hub.docker.com/r/wekanteam/wekan)
-[![Docker Hub pulls](https://img.shields.io/docker/pulls/wekanteam/wekan.svg "Docker Hub Pulls")](https://hub.docker.com/r/wekanteam/wekan)
-[![Wekan Build Status][travis_badge]][travis_status]
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/02137ecec4e34c5aa303f57637196a93 "Codacy Badge")](https://www.codacy.com/app/xet7/wekan?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wekan/wekan&amp;utm_campaign=Badge_Grade)
 [![Code Climate](https://codeclimate.com/github/wekan/wekan/badges/gpa.svg "Code Climate")](https://codeclimate.com/github/wekan/wekan)
 [![Project Dependencies](https://david-dm.org/wekan/wekan.svg "Project Dependencies")](https://david-dm.org/wekan/wekan)
