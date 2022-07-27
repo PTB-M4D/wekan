@@ -11,6 +11,10 @@ SET ROOT_URL=http://localhost
 SET PORT=80
 SET MONGO_URL=mongodb://127.0.0.1:27017/wekan
 
+REM Writable path for temporary saving attachments during migration to Meteor-Files
+REM Create directory wekan-uploads
+SET WRITABLE_PATH=..
+
 REM # https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
 REM SET MAIL_URL=smtps://username:password@email-smtp.eu-west-1.amazonaws.com:587/
 REM SET MAIL_FROM="Wekan Boards <info@example.com>"
@@ -18,7 +22,6 @@ REM # Currently MAIL_SERVICE is not in use.
 REM SET MAIL_SERVICE=Outlook365
 REM SET MAIL_SERVICE_USER=firstname.lastname@hotmail.com
 REM SET MAIL_SERVICE_PASSWORD=SecretPassword
-
 
 REM # ==== NUMBER OF SEARCH RESULTS PER PAGE BY DEFAULT ====
 REM SET RESULTS_PER_PAGE=20
@@ -122,6 +125,12 @@ REM SET TRUSTED_URL=
 REM # What to send to Outgoing Webhook, or leave out. Example, that includes all that are default: cardId,listId,oldListId,boardId,comment,user,card,commentId .
 REM # example: WEBHOOKS_ATTRIBUTES=cardId,listId,oldListId,boardId,comment,user,card,commentId
 REM SET WEBHOOKS_ATTRIBUTES=
+
+REM ------------------------------------------------------------
+
+REM ## ==== AUTOLOGIN WITH OIDC/OAUTH2 ====
+REM ## https://github.com/wekan/wekan/wiki/autologin
+REM # SET OIDC_REDIRECTION_ENABLED=true
 
 REM ------------------------------------------------------------
 
@@ -457,4 +466,9 @@ REM SET SAML_ATTRIBUTES=
 REM # Wait spinner to use
 REM SET WAIT_SPINNER=Bounce
 
-node main.js
+REM # https://github.com/wekan/wekan/issues/3585#issuecomment-1021522132
+REM # Add more Node heap:
+SET NODE_OPTIONS="--max_old_space_size=4096"
+REM # Add more stack. ulimit is not at Windows, stack-size is at Windows:
+REM #   bash -c "ulimit -s 65500; exec node --stack-size=65500 main.js"
+node --stack-size=65500 main.js

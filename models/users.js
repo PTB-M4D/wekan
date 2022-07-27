@@ -1,5 +1,6 @@
 //var nodemailer = require('nodemailer');
 import { SyncedCron } from 'meteor/percolate:synced-cron';
+import { TAPi18n } from '/imports/i18n';
 import ImpersonatedUsers from './impersonatedUsers';
 
 // Sandstorm context is detected using the METEOR_SETTINGS environment variable
@@ -254,7 +255,7 @@ Users.attachSchema(
     },
     'profile.moveChecklistDialog' : {
       /**
-       * move and copy card dialog
+       * move checklist dialog
        */
       type: Object,
       optional: true,
@@ -279,6 +280,38 @@ Users.attachSchema(
       type: String,
     },
     'profile.moveChecklistDialog.$.cardId': {
+      /**
+       * last selected card id
+       */
+      type: String,
+    },
+    'profile.copyChecklistDialog' : {
+      /**
+       * copy checklist dialog
+       */
+      type: Object,
+      optional: true,
+      blackbox: true,
+    },
+    'profile.copyChecklistDialog.$.boardId': {
+      /**
+       * last selected board id
+       */
+      type: String,
+    },
+    'profile.copyChecklistDialog.$.swimlaneId': {
+      /**
+       * last selected swimlane id
+       */
+      type: String,
+    },
+    'profile.copyChecklistDialog.$.listId': {
+      /**
+       * last selected list id
+       */
+      type: String,
+    },
+    'profile.copyChecklistDialog.$.cardId': {
       /**
        * last selected card id
        */
@@ -696,6 +729,17 @@ Users.helpers({
     return _ret;
   },
 
+  /** returns all confirmed copy checklist dialog field values
+   * <li> the board, swimlane, list and card id is stored for each board
+   */
+  getCopyChecklistDialogOptions() {
+    let _ret = {}
+    if (this.profile && this.profile.copyChecklistDialog) {
+      _ret = this.profile.copyChecklistDialog;
+    }
+    return _ret;
+  },
+
   hasTag(tag) {
     const { tags = [] } = this.profile || {};
     return _.contains(tags, tag);
@@ -824,7 +868,7 @@ Users.mutations({
       },
     };
   },
-  /** set the confirmed board id/swimlane id/list id/card id of a board
+  /** set the confirmed board id/swimlane id/list id/card id of a board (move checklist)
    * @param boardId the current board id
    * @param options an object with the confirmed field values
    */
@@ -834,6 +878,19 @@ Users.mutations({
     return {
       $set: {
         'profile.moveChecklistDialog': currentOptions,
+      },
+    };
+  },
+  /** set the confirmed board id/swimlane id/list id/card id of a board (copy checklist)
+   * @param boardId the current board id
+   * @param options an object with the confirmed field values
+   */
+  setCopyChecklistDialogOption(boardId, options) {
+    let currentOptions = this.getCopyChecklistDialogOptions();
+    currentOptions[boardId] = options;
+    return {
+      $set: {
+        'profile.copyChecklistDialog': currentOptions,
       },
     };
   },
@@ -1604,12 +1661,13 @@ if (Meteor.isServer) {
   // Let mongoDB ensure username unicity
   Meteor.startup(() => {
     allowedSortValues.forEach((value) => {
-      Lists._collection._ensureIndex(value);
+      Lists._collection.createIndex(value);
     });
-    Users._collection._ensureIndex({
+    Users._collection.createIndex({
       modifiedAt: -1,
     });
-    Users._collection._ensureIndex(
+/* Commented out extra index because of IndexOptionsConflict.
+    Users._collection.createIndex(
       {
         username: 1,
       },
@@ -1617,6 +1675,7 @@ if (Meteor.isServer) {
         unique: true,
       },
     );
+*/
     Meteor.defer(() => {
       addCronJob();
     });

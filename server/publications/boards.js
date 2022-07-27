@@ -5,6 +5,7 @@
 import Users from "../../models/users";
 import Org from "../../models/org";
 import Team from "../../models/team";
+import Attachments from '../../models/attachments';
 
 Meteor.publish('boards', function() {
   const userId = this.userId;
@@ -233,8 +234,8 @@ Meteor.publishRelations('board', function(boardId, isArchived) {
       cardCommentsLinkedBoard.selector = _ids => ({ boardId: _ids });
       const cardCommentReactions = this.join(CardCommentReactions);
       cardCommentReactions.selector = _ids => ({ cardId: _ids });
-      const attachments = this.join(Attachments);
-      attachments.selector = _ids => ({ cardId: _ids });
+      const attachments = this.join(Attachments.collection);
+      attachments.selector = _ids => ({ 'meta.cardId': _ids });
       const checklists = this.join(Checklists);
       checklists.selector = _ids => ({ cardId: _ids });
       const checklistItems = this.join(ChecklistItems);
@@ -270,7 +271,7 @@ Meteor.publishRelations('board', function(boardId, isArchived) {
           checklists.push(cardId);
           checklistItems.push(cardId);
           parentCards.push(cardId);
-          cardCommentReactions.push(cardId)
+          cardCommentReactions.push(cardId);
         },
       );
 
@@ -311,7 +312,7 @@ Meteor.publishRelations('board', function(boardId, isArchived) {
           ),
         );
 
-        this.cursor(presences.find({ userId: { $in: memberIds } }));
+        //this.cursor(presences.find({ userId: { $in: memberIds } }));
       }
     },
   );

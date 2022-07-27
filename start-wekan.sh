@@ -9,6 +9,9 @@
       #---------------------------------------------
       export MONGO_URL='mongodb://127.0.0.1:27017/wekan'
       #---------------------------------------------
+      # WRITEABLE PATH
+      export WRITABLE_PATH=..
+      #---------------------------------------------
       # Production: https://example.com/wekan
       # Local: http://localhost:2000
       #export ipaddress=$(ifdata -pa eth0)
@@ -133,6 +136,10 @@
       # What to send to Outgoing Webhook, or leave out. Example, that includes all that are default: cardId,listId,oldListId,boardId,comment,user,card,commentId .
       # Example: export WEBHOOKS_ATTRIBUTES=cardId,listId,oldListId,boardId,comment,user,card,commentId
       export WEBHOOKS_ATTRIBUTES=''
+      #---------------------------------------------
+      # ==== AUTOLOGIN WITH OIDC/OAUTH2 ====
+      # https://github.com/wekan/wekan/wiki/autologin
+      #export OIDC_REDIRECTION_ENABLED=true
       #---------------------------------------------
       # OAUTH2 ORACLE on premise identity manager OIM
       #export ORACLE_OIM_ENABLED=true
@@ -501,7 +508,13 @@
       # Wait spinner to use
       #export WAIT_SPINNER=Bounce
       #---------------------------------------------------------------------
-      node main.js
+      # https://github.com/wekan/wekan/issues/3585#issuecomment-1021522132
+      # Add more Node heap:
+      export NODE_OPTIONS="--max_old_space_size=4096"
+      # Add more stack:
+      bash -c "ulimit -s 65500; exec node --stack-size=65500 main.js"
+      #node main.js
+      #---------------------------------------------------------------------
       # & >> ../../wekan.log
       cd ../..
 #done

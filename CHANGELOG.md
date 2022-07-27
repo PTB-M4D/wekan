@@ -1,5 +1,681 @@
 [Mac ChangeLog](https://github.com/wekan/wekan/wiki/Mac)
 
+Required versions of Node.js, MongoDB etc are listed at https://wekan.github.io
+Download section.
+
+[How to upgrade WeKan](https://github.com/wekan/wekan/issues/4585)
+
+# Upcoming WeKan ® release
+
+This release adds the following new features:
+
+- [Added LaTex support to all input fields with markdown-it-mathjax3](https://github.com/wekan/wekan/commit/e81900178e62d36672952a8f0707c5297dcd7767).
+  Examples: https://github.com/wekan/wekan/wiki/LaTeX .
+  Thanks to DoktorScience.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.30 2022-07-11 WeKan ® release
+
+This release adds the following new features:
+
+- [Automatic login with OIDC](https://github.com/wekan/wekan/pull/4588).
+  Thanks to Viehlieb.
+- [OIDC/OAuth2 autologin settings for Docker/Snap/Source/Bundle platforms](https://github.com/wekan/wekan/commit/284f4401369aadcec72e67fa935dfc3a9fead721).
+  Thanks to xet7.
+
+and tries to fix the following bugs:
+
+- [Try to fix Snap](https://github.com/wekan/wekan/commit/17f8f8f14ff205d0cbb316c63a2da36f61ba4a1d).
+  Thanks to xet7.
+- [On CentOS 7 Docker there is seccomp issue with glibc 6, so setting it to unconfined to get WeKan working](https://github.com/wekan/wekan/commit/054d420dc97cadee6ed7896c608d95a6fe09dc9d).
+  Thanks to m-brangeon.
+- [Fix uploading attachments](https://github.com/wekan/wekan/commit/69d454dd035a989266175eb4268ffc3d7891eb95).
+  Thanks to BabyFnord and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.29 2022-07-11 WeKan ® release
+
+This release adds the following features:
+
+- [Resizeable size of list width and height. Size is not saved yet. In Progress](https://github.com/wekan/wekan/commit/01d0dd3b1dd0a3c9764e7c9d31eab739db2d3ad8).
+  Thanks to NLBlackEagle and xet7.
+- [00checkStartup, on error give more details on current user which run's wekan](https://github.com/wekan/wekan/pull/4581).
+  Thanks to mfilser.
+
+and adds the following updates:
+
+- [Updated to Node.js v14.20.0](https://github.com/wekan/wekan/commit/239dd1a3411a3d4f51b109e1a0505a5a23bc72ee).
+  Thanks to Node.js developers.
+- [Docker base image to Ubuntu 22.04](https://github.com/wekan/wekan/commit/6b4ffa69c64f0186a8b1b3ac175b633ac7c24263).
+  Thanks to Ubuntu developers.
+- Updated ostrio:files.
+  [Part 1](https://github.com/wekan/wekan/commit/0d67a86f2c9c1c9696d8507c60e53d47a226a6ad),
+  [Part 2](https://github.com/wekan/wekan/commit/c3bfcb78e9047a84d43041bebcec56718eaa140b).
+  Thanks to developers of dependencies.
+- [Updated dependencies](https://github.com/wekan/wekan/commit/ae09f0f0083a96c2211fdc02e60b4ff6a2f413ca).
+  Thanks to developers of dependencies.
+
+and adds the following translations:
+
+- [Added translation Asturia (Spain)](https://github.com/wekan/wekan/commit/12615fef5d44cf611b3f1d9fc0a7be3e98b8c042).
+  Thanks to translators.
+- [Added translations: Arabic (Algeria) (ar_DZ), Azerbaijani (az),  Azerbaijani (Azerbaijan) (az_AZ), Azerbaijani (Latin) (az@latin)](https://github.com/wekan/wekan/commit/99b2fdbf99f26ee9df2e1ff906db2d740210f902).
+  Thanks to translators.
+
+and fixes the following bugs:
+
+- [Do not show archived lists on All Boards](https://github.com/wekan/wekan/pull/4573).
+  Thanks to  helioguardabaxo.
+- [Fix div max-width on My Cards table view](https://github.com/wekan/wekan/pull/4574).
+  Thanks to  helioguardabaxo.
+- [Fixed one Typo in CSS Style Sheet](https://github.com/wekan/wekan/pull/4577).
+  Thanks to JonasPfeiferb1.
+- [Comment out unused CSS](https://github.com/wekan/wekan/commit/724d1386f6943ad87b8e32f5544cc84ae211904c).
+  Thanks to xet7.
+- [Move/Copy card closes now the popup if done](https://github.com/wekan/wekan/pull/4582).
+  Thanks to mfilser.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.28 2022-06-08 WeKan ® release
+
+This release adds the following updates:
+
+- [Upgraded to Meteor 2.7.3](https://github.com/wekan/wekan/commit/43b2d714043e053874e3c1101ae6e464d2e61b7e).
+  Thanks to Meteor developers.
+
+and adds the following translations:
+
+- [Added translations: Moroccan Arabic (ary) and Standard Moroccan Tamazight (zgh)](https://github.com/wekan/wekan/commit/5af4f54f4c702f9cc4df60a27ac234421e41575d).
+  Thanks to translators.
+- [Try to detect Japanese (Japan) better](https://github.com/wekan/wekan/commit/e25050316f6f018f68b03bef6fccbdaea7248461).
+  Thanks to takenoko14 at Transifex and xet7.
+
+and fixes the following bugs:
+
+- [Removed lightbox that caused bugs like Maximum stack size exceeded. TODO later: Add a new way to open attachment image bigger](https://github.com/wekan/wekan/commit/dfea3d0e735f1665a14f7e534e352e0e00871a02).
+  Thanks to xet7.
+- [Move and copy card set sorting](https://github.com/wekan/wekan/pull/4557).
+  Thanks to mfilser.
+- [Updated dependencies. Try to fix Binary release on releases.wekan.team lacks the CSS](https://github.com/wekan/wekan/commit/937797356ceeb99bf66eb826e13fc55f266c8739).
+  Thanks to znerol, mrcancer91, BabyFnord and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.27 2022-05-28 WeKan ® release
+
+This release adds the following updates:
+
+- [Upgraded to Meteor 2.7.3-beta.0](https://github.com/wekan/wekan/commit/25e50e3908a52a7bac61f8b939ad7c78cbd79060).
+  Thanks to Meteor developers.
+
+and fixes the following bugs:
+
+- [Fix opening card scrolls to wrong position when many swimlanes and card at bottom of board](https://github.com/wekan/wekan/commit/adcc33ed7fe686d46a85da6c11ea448d29e94ca7).
+  Thanks to xet7.
+- [Removed wekan-accounts-sandstorm .test-app directory, that could not be git cloned on Windows](https://github.com/wekan/wekan/commit/4f44c5bf872e369cd89ea0e8791482cc925294d3).
+  Thanks to xet7.
+- Try to fix Snap.
+  [Part 1](https://github.com/wekan/wekan/commit/3b419848d1b7a7f421db3662d860dcea1ea6af1c),
+  [Part 2](https://github.com/wekan/wekan/commit/e50d69cfb78e5f0150e96cc90337255ccbd59e76),
+  [Part 3](https://github.com/wekan/wekan/commit/ea66eca60ddbf7127c9fbed9ab41df52542ad279),
+  [Part 4](https://github.com/wekan/wekan/commit/9ca26d22d0c2c9bee792e50ff203a5c18c9d556b),
+  [Part 5](https://github.com/wekan/wekan/commit/fac1ba5952f763d257b04a934e3407f9b1d1d37a),
+  [Part 6](https://github.com/wekan/wekan/commit/f2815a90393418dea88aa49ee74c6af91fafe96d),
+  [Part 7](https://github.com/wekan/wekan/commit/2587e2f00ae27742893e48e98845a3139e3f3a02),
+  [Part 8](https://github.com/wekan/wekan/commit/693a49f85200adcf81f5cf0ea56c7dd795757988).
+  Thanks to xet7.
+- [WeKan Gantt GPLv2: Try to fix Gantt, by adding translations, but is not visible yet](https://github.com/wekan/wekan-gantt-gpl/commit/a08c01c76eaaf2884890a39c97d1f72da222fba1).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.26 2022-05-21 WeKan ® release
+
+This release adds the following updates:
+
+- [Updated to Node.js v14.19.3](https://github.com/wekan/wekan/commit/6c8563d02f0865989d8db39dd84757a1a534b49b).
+  Thanks to Node.js developers.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.25 2022-05-21 WeKan ® release
+
+This release adds the following new features:
+
+- [Attachment rename](https://github.com/wekan/wekan/pulls/4521).
+  Thanks to mfilser.
+
+and fixes the following bugs:
+
+- [Fix Bullets in label selection popup. Related to import nib css reset](https://github.com/wekan/wekan/commit/985c2cdbfdb38eb43852f3aa257859bbd3f817b9).
+  Thanks to AuspeXeu, mfilser and xet7.
+- [Fix images not showing correctly, by updating packages like jquery,
+  removing handlebars, changing image attachment view big image popup
+  from swipebox to lightbox, and changing import nib related code](https://github.com/wekan/wekan/commit/990477e9c6b33072b27bebf387bd6e6d9ef62074).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.24 2022-05-18 WeKan ® release
+
+This release fixes the following bugs:
+
+- [Fix redirects needs to be done in sync](https://github.com/wekan/wekan/commit/3ed1fc3e6bdf90ecdc3593468d68a29807ed52b5).
+  Thanks to nebulade and xet7.
+- [Added missing 'import nib' stylesheet reset that removes extra li bullet points](https://github.com/wekan/wekan/commit/8964a18e765699e2a5060a72c3ca66d27e1c2ffd).
+  Thanks to mfilser and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.23 2022-05-17 WeKan ® release
+
+This release adds the following updates:
+
+- [Merged branch upgrade-meteor 2.7.2 to master](https://github.com/wekan/wekan/commit/7e43a6f4fb6ac3346729d3bb091e2019591fb323).
+  Thanks to xet7.
+- [Upgrade to Meteor 2.7.2](https://github.com/wekan/wekan/commit/963a4711dbad325a1618abf2f76541d94570ca89).
+  Thanks to Meteor developers.
+- [When developing with Meteor on macOS, get current IP address](https://github.com/wekan/wekan/commit/a73a4c1e5b1971ff32643fb39a37e285a240a77a).
+  Thanks to xet7.
+- [Updated meteor-upgrade branch to Node.js v14.19.2](https://github.com/wekan/wekan/commit/907013228d00f1190933bf7fc402957b1a973131).
+  Thanks to Node.js developers.
+- [Added back to meteor-upgrade branch packages WeKan lockout, ldap, oidc, cas](https://github.com/wekan/wekan/commit/00768b4392109dec62a4dcf44dbceb295990d785).
+  Thanks to xet7.
+- [Added fixes to meteor-upgrade branch Sandstorm accounts](https://github.com/wekan/wekan/pulls/4500).
+  Thanks to mfilser.
+- [Added backup to meteor-upgrade branch Sandstorm Accounts](https://github.com/wekan/wekan/commit/f260b7ba889c39a2db4a5f3057439a9b78dd7cf1).
+  Thanks to xet7.
+- [Improvements to future WeKan Snap core20. Does not work yet. In Progress](https://github.com/wekan/wekan/commit/38d26fa7e32c705a0cad34c199e1190c5226b968).
+  Thanks to xet7.
+- [Updated MongoDB 5 rawCollection deprecated update to updateMany (or updateOne)](https://github.com/wekan/wekan/commit/a196a5ed63cba2b812b9e825172f3a97d9756daa).
+  Thanks to xet7.
+- [Added --trace-warnings to start-wekan.sh](https://github.com/wekan/wekan/commit/50ce0ce442d804bf1d9eacacba3b493761ca6773).
+  Thanks to xet7.
+- [Meteor-upgrade: Fix language auto-detection](https://github.com/wekan/wekan/commit/8f43b74bbca78fa03162985fc7b2192782549c1f).
+  Thanks to imajus.
+- [Meteor-upgrade: Fix broken useraccounts UI i18n](https://github.com/wekan/wekan/commit/566527dfad9b11d730c84f7b62bac9c4d60518bd).
+  Thanks to imajus.
+- [Meteor-upgrade: Rename isoCode to tag (cause they are IETF tags actually)](https://github.com/wekan/wekan/commit/c858e0b7965847587c5e16b775c4cd44cbefbee0).
+  Thanks to imajus.
+- [Meteor-upgrade: Add missing language names](https://github.com/wekan/wekan/commit/f40b0d495db12824e46a60d9676e94464cc9897a).
+  Thanks to imajus.
+- [Added 30 new languages, now about 105 total](https://github.com/wekan/wekan/commit/28317c7cf3fea7f1c7cf0860ccebb7322000d132).
+  Thanks to translators and xet7.
+- [Use MongoDB 5 at docker-compose.yml](https://github.com/wekan/wekan/commit/77d72ae20acf3c96d7e864bf0fd8a159f9456823).
+  Thanks to MongoDB.
+
+and fixes the following bugs:
+
+- [Fix Copy Board](https://github.com/wekan/wekan/pulls/4496).
+  Thanks to mfilser.
+- [Fix FileStoreStrategy, moveToStorage, wrong variable in error handling](https://github.com/wekan/wekan/commit/58d760a615834f989633efcd5e1577265219af19).
+  Thanks to mfilser.
+- [Multi-File Storage code was missing after merge](https://github.com/wekan/wekan/commit/3fad014e919be29fc85af754f89b708888d8a98e).
+  Thanks to mfilser.
+- Card Details dates in user language format.
+  [Part 1](https://github.com/wekan/wekan/commit/d1714abc6a13783600c68526c259967886dbe80d),
+  [Part 2](https://github.com/wekan/wekan/commit/2e5ec0308f2ac8059af6219693177e294197776a),
+  [Part 3](https://github.com/wekan/wekan/commit/441b3e9c0a50b21da2c875946ff1059a14ce04e4).
+  Thanks to mfilser.
+- [Converted Stylus to CSS. Removed Stylus. This change removed many error messages](https://github.com/wekan/wekan/commit/072778b9aaefd7fcaa7519b1ce1cafc1704d646d).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.22 2022-05-09 WeKan ® release
+
+- [Updated to Node.js v14.19.2](https://github.com/wekan/wekan/commit/bfef7844ba15a28bce63a577ed499ed899aaff79).
+  Thanks to Node.js developers.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.21 2022-04-28 WeKan ® release
+
+This release fixes the following bugs:
+
+- [Fix themes](https://github.com/wekan/wekan/pull/4490).
+  Thanks to TheExo.
+- [Try to fix Snap by adding cypress and jest for cypress-image-snapshot and jest-image-snapshot](https://github.com/wekan/wekan/commit/7dd5fa4ac40f0fe63168b9a2ef4a0940bfc9d80b).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.20 2022-04-25 WeKan ® release
+
+This release fixes the following bugs:
+
+- [Fix Dockerfile: Ubuntu 22.04 causes Python trouble](https://github.com/wekan/wekan/commit/79a866e2384d262572edf68503f31e699df675eb).
+  Thanks to bronger.
+- [FileStoreStrategyFactory, added logic to determine the right file storage strategy to use](https://github.com/wekan/wekan/pull/4486).
+  Thanks to mfilser.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.19 2022-04-22 WeKan ® release
+
+This release adds the following new features:
+
+- [Added to All Boards: Members list and board card count per list](https://github.com/wekan/wekan/pull/4477).
+  Thanks to helioguardabaxo.
+- [Added to All Boards MiniScreen: Members list and board card count per list](https://github.com/wekan/wekan/commit/45642911a9984dc48b4bcf89403a2a47d324b9c1).
+  Thanks to mfilser and xet7.
+- [Added All Boards Settings popup title](https://github.com/wekan/wekan/commit/023deb6c953b66f4dfcbff68ab2d1871dfb45d51).
+  Thanks to xet7.
+- [Updated All Boards Settings icon](https://github.com/wekan/wekan/commit/ce55d84fd83f58d25797cfccf5cec35b68b41732).
+  Thanks to xet7.
+- [Added to Board Settings: Minicard Settings and All Boards Settings improvements](https://github.com/wekan/wekan/commit/95a4b4fd919683e51e56a7bb76213b146a170e09).
+  Thanks to xet7.
+- [Added Table View to My Cards](https://github.com/wekan/wekan/pulls/4479).
+  Thanks to helioguardabaxo.
+- [Fix syntax in myCards.jade](https://github.com/wekan/wekan/commit/d271678ef494675d78ada25ee33f1d18d3d7ce14).
+  Thanks to xet7.
+- [Multi file storage for moving between MongoDB GridFS and filesystem](https://github.com/wekan/wekan/pull/4484).
+  Thanks to mfilser.
+
+and adds the following updates:
+
+- Updated dependencies.
+  [Part 1](https://github.com/wekan/wekan/commit/f87cb10d099e5f80cded71bf633f3418713680e1),
+  [Part 2](https://github.com/wekan/wekan/commit/626a7f83fc71228f2d793667ad11c5e9939e2970),
+  [Part 3](https://github.com/wekan/wekan/commit/359692a564d891ee895391db72315a7c0cff9a26).
+  Thanks to developers of dependencies.
+- [Updated meteor-spk](https://github.com/wekan/wekan/commit/1360517af8648a7b1daf664e82700aa60f9d87c4).
+  Thanks to meteor-spk developers.
+
+and fixes the following bugs:
+
+- [Fix Board Settings / All Boards Settings options has some bug](https://github.com/wekan/wekan/commit/77085daaa8b16f05acb314f077f48bf1d4ddbbac).
+  Thanks to helioguardabaxo.
+- [.gitignore, ignore all vim swap files](https://github.com/wekan/wekan/commit/5e567365f3b4e7cc40558105a0bd779efa17ac5b).
+  Thanks to mfilser.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.18 2022-04-08 WeKan ® release
+
+This release adds the following new features:
+
+- [New theme "exodark"](https://github.com/wekan/wekan/pull/4464).
+  Thanks to TheExo.
+- [Show bigger logo on tab](https://github.com/wekan/wekan/commit/4057bb6372a06d9e120964e5040ddd808ba93840)-
+  Thanks to Meeques, helioguardabaxo and xet7.
+
+and fixes the following bugs:
+
+- [Fix Card Description on dark theme is too dark](https://github.com/wekan/wekan/pull/4466).
+  Thanks to TheExo.
+- Removed browser contect policy so that attachments would be visible.
+  [Part 1](https://github.com/wekan/wekan/commit/8a39a52d5d4d151dd90604091e35e51b6744e599),
+  [Part 2](https://github.com/wekan/wekan/commit/12448ab473c08a2c3c873d7ffa2b78e7630dc87a).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.17 2022-04-06 WeKan ® release
+
+This release adds the following updates:
+
+- [Updated dependencies](https://github.com/wekan/wekan/commit/f613a5875fbc600292f6821776d957c7221bcd0a).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.16 2022-04-06 WeKan ® release
+
+This release fixes the following bugs:
+
+- [Added HTML viewer to description on minicard](https://github.com/wekan/wekan/pull/4457).
+  Thanks to helioguardabaxo.
+- [Remove incomplete translated changelogs](https://github.com/wekan/wekan/pull/4455).
+  Thanks to ocdtrekkie.
+- [Fix Can't add attachments because of Content-Security-Policy](https://github.com/wekan/wekan/commit/0d9c37b0067d46669b7258bfff5dfc16d590e1d9).
+  Thanks to Ben0it-T and xet7.
+- [Try to fix Duplicate Board](https://github.com/wekan/wekan/commit/e7a11c57338a15a8fc1e1b74a2446ffd7d4743a7).
+  Thanks to xet7.
+- [Try to fix Trello import Attachment and links not defined. In Progress, does not work yet](https://github.com/wekan/wekan/commit/5eca3de00fea31721fa2e10b7d3a6f13ca87f39c).
+  Thanks to akhudushin, hatl, 2447254731 and xet7.
+- [Comment out Trello attachment import until it's implemented with API key](https://github.com/wekan/wekan/commit/49a996624f3842c243bb72120b95c27d914e02a9).
+  Thanks to xet7.
+- [Try to fix Snap WRITABLE_FILES](https://github.com/wekan/wekan/commit/4ca7b0dad733099cd6ad15acc69ec436539f7460).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.15 2022-04-05 WeKan ® release
+
+This release add the following new features:
+
+- [Show description text on minicard](https://github.com/wekan/wekan/pull/4454).
+  Thanks to helioguardabaxo.
+
+and fixes the following bugs:
+
+- [Card Details List-Dropdown is now filled too if the card is opened from global search](https://github.com/wekan/wekan/pull/4444).
+  Thanks to mfilser.
+- [UI improvements on maximized card header](https://github.com/wekan/wekan/pull/4446).
+  Thanks to helioguardabaxo.
+- [Fix oidc login when no group data is present](https://github.com/wekan/wekan/pull/4450).
+  Thanks to danielkaiser.
+- [Fix LDAP authentication doesn't support multiple emails in LDAP accounts](https://github.com/wekan/wekan/commit/3394f54fb47ce2830dd72f67fba4f281246c156f).
+  Thanks to buzztiaan and NURDspace.
+- [Added missing characters to Subtasks jade template](https://github.com/wekan/wekan/commit/c18f5319152cd4df51729f26911d2e910d8bbc5d).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.14 2022-04-03 WeKan ® release
+
+This release fixes the following bugs:
+
+- [WRITABLE_PATH must be writable, otherwise abort starting Wekan](https://github.com/wekan/wekan/pull/4440).
+  Thanks to mfilser.
+- [Better error message layout if Wekan can not start](https://github.com/wekan/wekan/pull/4442).
+  Thanks to mfilser.
+- [Try to fix Attachments.insert is not a function](https://github.com/wekan/wekan/commit/02e977f5128c76b6ff592c8b236868baaa9404cb).
+  Thanks to ChrisMagnuson and xet7.
+- Some torodb fixes. In Progress.
+  [Part 1](https://github.com/wekan/wekan/commit/edb4db30bbd0b60ccc58be7238652288cf31ebd0),
+  [Part 2](https://github.com/wekan/wekan/commit/1e42aebd707aae46a1f7b005a0891d7b12275d1b).
+  Thanks to xet7.
+- [Not ZFS, it uses many gigabytes of RAM](https://github.com/wekan/wekan/commit/747a3b17d52c972db5c9b460e88d02bd52fb35bb).
+  Thanks to xet7.
+- [Added WRITABLE_PATH to rebuild-wekan.sh meteor commands](https://github.com/wekan/wekan/commit/9ab2d5fab09f5c9a245f841df912a9b04bc9b3f0).
+  Thanks to xet7.
+- [Fix list color too close with moderndark theme on mobile view](https://github.com/wekan/wekan/commit/5d3d5e4b2db22564b669c93e083c3d40215454f4).
+  Thanks to gerald41, Meeques, Go-rom, mfilser, jghaanstra and xet7.
+- [Fixed docker-compose.yml WRITABLE_PATH](https://github.com/wekan/wekan/commit/9238b6620cf062e70c812f5c3575fbd8d4dd56be).
+  Thanks to xet7.
+- [Updated WRITABLE_PATH at start-wekan.sh and start-wekan.bat](https://github.com/wekan/wekan/commit/10555e151457edba1d61eff5dd8f6cf75a71abef).
+  Thanks to xet7.
+- [Try to fix Snap WRITABLE_PATH](https://github.com/wekan/wekan/commit/74d468ea7947703bdd77ff84b8d175a3276ddd36).
+  Thanks to xet7.
+- [Snap: Try to delete incomplete uploads when starting](https://github.com/wekan/wekan/commit/25dc378c46f7b047f82d5848ae4d7b4d8ef39c5e).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.13 2022-04-01 WeKan ® release
+
+This release adds the following new features:
+
+- [Added Perl scripts for Asana export to WeKan ®](https://github.com/wekan/wekan/commit/376bcbb373d16317060adc2b1154cc20496775cc).
+  Thanks to GeekRuthie.
+- [Add get list and board cards count to API](https://github.com/wekan/wekan/pull/4424).
+  Thanks to helioguardabaxo.
+- [Added translations: English (Brazil) en-BR and Czech (Czech Republic) cs-CZ](https://github.com/wekan/wekan/commit/ca15e060bb182b0ff4768a3ff9d4de5b1ee125ce).
+  Thanks to translators.
+- [Added WRITABLE_PATH to Windows start-wekan.bat](https://github.com/wekan/wekan/commit/1da0786211556697acac45bdc71b283630348081).
+  Thanks to BabyFnord and xet7.
+
+and adds the following updates:
+
+- [Changed from volta to n. Added info about developing on Ubuntu 22.04](https://github.com/wekan/wekan/commit/9099e20b806c713cc73b86122ac4a462b12e4785).
+  Thanks to xet7.
+- [Added some more info about building on Windows, not tested yet](https://github.com/wekan/wekan/commit/e61e9bb5081efca352dc9496f0602df2f15492fd).
+  Thanks to xet7.
+- [Updated URL to meteor-spk](https://github.com/wekan/wekan/commit/f2f3b76eda982856f88f5289c6d574fdf95abd82).
+  Thanks to xet7.
+- Updated dependencies.
+  [Part 1](https://github.com/wekan/wekan/commit/c397b5eda8e60ef41ce66bec716f859c352d4744),
+  [Part 2](https://github.com/wekan/wekan/commit/971391eae9e9d7df341de630a28e074408991c2c).
+  Thanks to developers of dependencies.
+
+and fixes the following bugs:
+
+- [Attachment migration, try to ignore error on Cloudron on removing old index cardId](https://github.com/wekan/wekan/pull/4408).
+  Thanks to mfilser.
+- [Fix Import Done Button do not redirect](https://github.com/wekan/wekan/pull/4411).
+  Thanks to Ben0it-T.
+- [Fix Duplicate board and create board from template doesn't open board](https://github.com/wekan/wekan/pull/4413).
+  Thanks to Ben0it-T.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.12 2022-03-11 WeKan ® release
+
+This release adds the following new features:
+
+- Feature/empower sso oicd data propagation.
+  [Part 1](https://github.com/wekan/wekan/pull/4392),
+  [Part 2](https://github.com/wekan/wekan/pull/4404).
+  Thanks to Viehlieb.
+- [Add linkedBoard Activities to sidebar](https://github.com/wekan/wekan/pull/4396).
+  Thanks to Ben0it-T.
+- [Added Snap WRITABLE_PATH](https://github.com/wekan/wekan/commit/9f807c59d76b08476b79b0173c2c3a59248fa65b).
+  Thanks to xet7.
+- [Docs for Snap WRITABLE_PATH](https://github.com/wekan/wekan/commit/01a91f3a36747311fb69123124254db13156e4da).
+  Thanks to xet7.
+
+and fixes the following bugs:
+
+- Fix Boards.uniqueTitle not working as expected.
+  [Part 1](https://github.com/wekan/wekan/pull/4401),
+  [Part 2](https://github.com/wekan/wekan/pull/4402).
+  Thanks to Ben0it-T.
+- [Attachments fixes after migration to meteor files (image preview, global search)](https://github.com/wekan/wekan/pull/4405).
+  Thanks to mfilser.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.11 2022-03-03 WeKan ® release
+
+This release adds the following updates:
+
+- [Updated In Progress future Snap configs](https://github.com/wekan/wekan/commit/dc6bc9ed54e46ad2ba55fb1dd73f41c0432a7b8f).
+  Thanks to xet7.
+
+and tries to fix the following bugs:
+
+- [Try to fix Snap](https://github.com/wekan/wekan/commit/e5cfcc84faea551ea49b588348ade44b027718ce).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.10 2022-03-02 WeKan ® release
+
+This release adds the following new features:
+
+- [Switch from CollectionFS to Meteor-Files](https://github.com/wekan/wekan/pull/4336).
+  NOTE: This does not yet have migration feature to filesystem or S3.
+  Thanks to imajus, mfilser and xet7.
+- [Added Meteor-Files WRITEABLE_PATH for Sandstorm, Snap and Source](https://github.com/wekan/wekan/commit/cc0658a225ef35a6153feab2ad0c0eb40ad66eeb).
+  Thanks to xet7.
+- [Added WRITABLE_PATH to be usable when developing with meteor command, and to torodb](https://github.com/wekan/wekan/commit/e0d8ddf0034a6d2a7f259a71544ec4c57d23f0c5).
+  Thanks to xet7.
+- [Enabled building Sandstorm WeKan, now that file uploading with Meteor-Files works](https://github.com/wekan/wekan/commit/dc99218e4ecb766e7947f8a0298236dead140b9f).
+  Thanks to imajus, mfilser and xet7.
+
+and adds the following updates:
+
+- [Updated to Node.js v14.19.0](https://github.com/wekan/wekan/commit/492997922129f4076c61c1bd8822851d39ce3f11).
+  Thanks to Node.js developers.
+- [Use Node 14 at rebuild-wekan.sh](https://github.com/wekan/wekan/commit/ab33866d1a5a9080688c0c5f857d12c4117b9311).
+  Thanks to xet7.
+- Updated dependencies.
+  [Part 1](https://github.com/wekan/wekan/commit/1a7a41698c1a5180e5ffa7d6b84820e05864ac77),
+  [Part 2](https://github.com/wekan/wekan/commit/9b4179e163bbf6690070fe1e6a14799f2ea17df6).
+  Thanks to developers of dependencies.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.09 2022-02-28 WeKan ® release
+
+This release tries to fix the following bugs:
+
+- [Try to fix Admin Panel / Disable Registration and Disable Forgot Password](https://github.com/wekan/wekan/commit/0775e2a3e5c5d98e4d8c1954a15beb0688c73075).
+  Thanks to urmel1960, Ben0it-T and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.08 2022-02-27 WeKan ® release
+
+This release tries to fix the following bugs:
+
+- [Try to allow register and login](https://github.com/wekan/wekan/commit/3076547cee3a5fabe8df106ddbbd6ce1e6c91a8b).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.07 2022-02-26 WeKan ® release
+
+This release fixes the following bugs:
+
+- [Fix Forgot Password to be optional](https://github.com/wekan/wekan/commit/9bd68794555009f5eabad269ed642efa4e3010f1).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.06 2022-02-26 WeKan ® release
+
+This release adds the following new features:
+
+- [Feature/shortcuts for label assignment](https://github.com/wekan/wekan/pull/4377).
+  Thanks to Viehlieb.
+- [Feature/propagate OIDC data](https://github.com/wekan/wekan/pull/4379).
+  Thanks to Viehlieb.
+
+and fixes the following bugs:
+
+- [Global search: Card Details popup opens now in normal view even if maximized card is configured](https://github.com/wekan/wekan/pull/4352).
+  Thanks to mfilser.
+- [Card details, fix header while scrolling](https://github.com/wekan/wekan/pull/4358).
+  Thanks to mfilser.
+- [Add subscription to announcements, so that system wide announcements are shown to all](https://github.com/wekan/wekan/pull/4375).
+  Thanks to pablo-ng.
+- [Fixed Disable Self-Registration. Added Disable Forgot Password to same Admin Panel page](https://github.com/wekan/wekan/commit/b85db43c4755cf54e550f664311cd95097d68ae1).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.05 2022-02-07 WeKan ® release
+
+This release adds the following updates:
+
+- [Update release scripts to merge latest changes](https://github.com/wekan/wekan/commit/ad35e7b7bd1d6d7568b3a5d692941e03e4623c1a).
+  Thanks to xet7.
+
+and fixes the following bugs:
+
+- [Fix copy move card](https://github.com/wekan/wekan/pull/4345).
+  Thanks to mfilser.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.04 2022-02-07 WeKan ® release
+
+This release fixes the following bugs:
+
+- [Fixed Copy card to list does not work, by reverting clientside changes of PR 4333](https://github.com/wekan/wekan/commit/a5b376e6b5f9b171c39cd9341b8c2a4346fc3f5e).
+  Thanks to Meeques, PaulITsoft and xet7.
+- [Fixed Problem with selecting action in rule window](https://github.com/wekan/wekan/commit/dc7b97c1780849b04389696f0dac38e4477e28cf).
+  Thanks to Meeques and xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.03 2022-02-07 WeKan ® release
+
+This release adds the following updates:
+
+- [Updated to Node.js v12.22.10](https://github.com/wekan/wekan/commit/cc5486797648b8098e50fa4f68cc4b588f41ab60).
+  Thanks to Node.js developers.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.02 2022-02-06 WeKan ® release
+
+This release adds the following updates:
+
+- [Updated dependencies](https://github.com/wekan/wekan/commit/f888b5cb23917c01cef7a84cf23314051ec6bfff).
+  Thanks to developers of dependencies.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.01 2022-02-06 WeKan ® release
+
+This release adds the following updates:
+
+- [Updated to Node.js v14.19.0](https://github.com/wekan/wekan/commit/ceed865e305f41ec027f1ed345b041841c9812c0).
+  Thanks to Node.js developers.
+
+and fixes the following bugs:
+
+- [Fixed WeKan on Sandstorm](https://github.com/sandstorm-io/meteor-spk/pull/41).
+  Thanks to xet7.
+- [Fixed building fibers](https://github.com/wekan/wekan/commit/0460a7d9d3219ed7ba5aa5040349b9d56e6a45e0).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v6.00 2022-02-05 WeKan ® release
+
+This release adds the following new features:
+
+- [Adding list select at card details](https://github.com/wekan/wekan/pull/4333).
+  Thanks to mfilser.
+
+and adds the following updates:
+
+- [Updated release scripts](https://github.com/wekan/wekan/commit/9b7bf1ba289f0026f0bf957527c86b6f4696686e).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v5.99 2022-02-04 WeKan ® release
+
+This release adds the following changes:
+
+- [Revert rounded corners minicard on moderndark theme](https://github.com/wekan/wekan/pull/4332).
+  Thanks to jghaanstra.
+
+and fixes the following bugs:
+
+- [Remove not working options from rebuild-wekan.sh](https://github.com/wekan/wekan/commit/af598b13e8266654ab52425f71840c3628c9835a).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
+# v5.98 2022-02-03 WeKan ® release
+
+This release adds the following CRITICAL SECURITY UPDATES:
+
+- [Updated to Node.js v12.22.10](https://github.com/wekan/wekan/commit/290a6dfb6e104b887f9ee2cc70db84b83fe3be35).
+  Thanks to Node.js developers.
+
+and adds the following new features:
+
+- [Make card corners round](https://github.com/wekan/wekan/commit/045160c7bb7c8696a181d9ed4e0b54d0c27b5f59).
+  Thanks to Meeques and xet7.
+- [Copy checklist](https://github.com/wekan/wekan/pull/4331).
+  Thanks to mfilser.
+
+and adds the following new translations:
+
+- Added translation: Galician (Spain).
+  [Part 1](https://github.com/wekan/wekan/commit/c0828f2d00095c68b4533a10ff7ede0a16131093),
+  [Part 2](https://github.com/wekan/wekan/commit/9a539fb414c3ffeae2ea94f863d2bb3bc6e314f1),
+  [Part 3](https://github.com/wekan/wekan/commit/a8e3dc06fe76620d09eddbc7d118a749c85b1c7c).
+  Thanks to translators.
+
+and fixes the following bugs:
+
+- [Fix typo in tests](https://github.com/wekan/wekan/commit/62efb67d06a4aeb3299805911391b6e936901b42).
+  Thanks to xet7.
+- Try to fix tests by adding puppeteer back.
+  [Part 1](https://github.com/wekan/wekan/commit/7122f59c51775f9b382cdbcf5690eba2ad907ccf),
+  [Part 2](https://github.com/wekan/wekan/commit/1bf1ed79e85e091d79fa70feb46d072c81e55810).
+  Thanks to xet7.
+- [Removed unnecessary space between checklist title and first checklist item if checklist progress is 0%](https://github.com/wekan/wekan/pull/4329).
+  Thanks to mfilser.
+- [Lists now moveable when swimlane requires scrolling](https://github.com/wekan/wekan/pull/4330).
+  Thanks to mfilser.
+- [Add more stack and heap to Node.js at all WeKan platforms](https://github.com/wekan/wekan/commit/ff13571c719ad24e24ea6dc871ced827a7120ac8).
+  Thanks to xet7.
+
+Thanks to above GitHub users for their contributions and translators for their translations.
+
 # v5.97 2022-01-23 WeKan ® release
 
 This release fixes the following bugs:
@@ -285,7 +961,7 @@ This release removes the following new features:
 
 - [Revert change from WeKan v5.81: At Sandstorm, every WeKan user is now WeKan Admin and has Admin Panel](https://github.com/wekan/wekan/commit/ebc7741fcb9ad854234921ed0546255411adeec9).
   Thanks to ocdtrekkie and xet7.
-    
+
 and adds the following new features:
 
 - [List header contains now a button to add the card to the bottom of the list](https://github.com/wekan/wekan/pull/4195).
@@ -537,7 +1213,7 @@ and fixes the following bugs:
   Thanks to niklasdahlheimer.
 - [Popup fixes: Archive cards, upload attachements etc](https://github.com/wekan/wekan/pull/4101).
   Thanks to mfilser.
-  
+
 Thanks to above GitHub users for their contributions and translators for their translations.
 
 # v5.68 2021-10-27 WeKan ® release
@@ -1508,7 +2184,7 @@ This release adds the following new features:
 
 - [Custom Field "String Template"](https://github.com/wekan/wekan/pull/3701).
   Thanks to tod31.
-- [1) Admin reports. An option added to the admin panel that has reports an admin can run. 
+- [1) Admin reports. An option added to the admin panel that has reports an admin can run.
       Right now it has two reports for attachments and broken cards.
   2) Add the creator avatar to `cardDetails` and `minicard`.  Avatar is only shown if it is selected in card settings.
   3) Added a new search operator `creator`.
@@ -2241,7 +2917,7 @@ and fixes the following bugs:
   Thanks to xet7.
 - [Rules not copied during board copy](https://github.com/wekan/wekan/pull/3458).
   Thanks to jrsupplee.
- 
+
 Thanks to above GitHub users for their contributions and translators for their translations.
 
 # v4.83 2021-01-20 Wekan release
@@ -2262,7 +2938,7 @@ and fixes the following bugs:
   Thanks to jrsupplee.
 
 Thanks to above GitHub users for their contributions and translators for their translations.
-  
+
 # v4.82 2021-01-20 Wekan release
 
 This release adds the following new features:
