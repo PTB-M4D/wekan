@@ -15,7 +15,7 @@ executors:
       IMAGE_NAME: wekan
       TAG: latest
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
 
 workflows:
   build_and_deploy:
