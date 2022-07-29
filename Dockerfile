@@ -18,7 +18,6 @@ ENV BUILD_DEPS="apt-utils libarchive-tools gnupg gosu wget curl bzip2 g++ build-
     DEBUG=false \
     NODE_VERSION=v14.20.0 \
     METEOR_RELEASE=1.10.2 \
-    METEOR_ALLOW_SUPERUSER=true \
     USE_EDGE=false \
     METEOR_EDGE=1.5-beta.17 \
     NPM_VERSION=latest \
@@ -299,7 +298,7 @@ RUN \
     #gosu wekan:wekan /home/wekan/.meteor/meteor add standard-minifier-js && \
     chmod u+w *.json && \
     gosu wekan:wekan npm install && \
-    /home/wekan/.meteor/meteor build --directory /home/wekan/app_build && \
+    gosu wekan:wekan /home/wekan/.meteor/meteor build --directory /home/wekan/app_build && \
     #rm /home/wekan/app_build/bundle/programs/server/npm/node_modules/meteor/rajit_bootstrap3-datepicker/lib/bootstrap-datepicker/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs && \
     #Removed binary version of bcrypt because of security vulnerability that is not fixed yet.
     #https://github.com/wekan/wekan/commit/4b2010213907c61b0e0482ab55abb06f6a668eac
