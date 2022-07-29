@@ -36,7 +36,8 @@ jobs:
 
       # This builds the image. Taken from
       # https://circleci.com/docs/2.0/building-docker-images/#overview
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.14
 
       # Build image.
       - run:
